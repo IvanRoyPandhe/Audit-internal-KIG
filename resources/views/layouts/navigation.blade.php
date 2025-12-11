@@ -13,8 +13,59 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                        Dashboard
                     </x-nav-link>
+
+                    @if(Auth::user()->role->name === 'admin')
+                        <!-- Admin Menu -->
+                        <x-nav-link :href="route('departments.index')" :active="request()->routeIs('departments.*')">
+                            Departemen
+                        </x-nav-link>
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            Users
+                        </x-nav-link>
+                        <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.*')">
+                            Roles
+                        </x-nav-link>
+                    @endif
+
+                    @if(in_array(Auth::user()->role->name, ['admin', 'auditor']))
+                        <!-- Auditor Menu -->
+                        <x-dropdown align="left" width="48">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('rkia.*') ? 'border-blue-600 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none focus:border-blue-700 transition duration-150 ease-in-out">
+                                    <div>RKIA</div>
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('rkia.timeline')">
+                                    Timeline Audit
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('rkia.program')">
+                                    Program Audit
+                                </x-dropdown-link>
+                            </x-slot>
+                        </x-dropdown>
+                    @endif
+
+                    @if(in_array(Auth::user()->role->name, ['admin', 'auditor', 'pimpinan']))
+                        <!-- Laporan Menu -->
+                        <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                            Laporan
+                        </x-nav-link>
+                    @endif
+
+                    @if(in_array(Auth::user()->role->name, ['auditee_sm', 'auditee_em']))
+                        <!-- Auditee Menu -->
+                        <x-nav-link :href="route('auditee.dashboard')" :active="request()->routeIs('auditee.*')">
+                            Audit Saya
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

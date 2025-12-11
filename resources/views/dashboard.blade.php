@@ -1,404 +1,302 @@
 <x-app-layout>
     <x-slot name="title">Dashboard</x-slot>
-    <x-slot name="badge">Terbaru</x-slot>
 
-    <!-- Decorative Background Elements -->
-    <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-        <div class="absolute top-0 left-0 w-96 h-96 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-0 right-1/3 w-96 h-96 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-    </div>
+    @php
+        $userRole = Auth::user()->role->name;
+    @endphp
 
-    <!-- Stats Cards with Enhanced Design -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <!-- Total Audit -->
-        <div class="relative bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-xl p-6 overflow-hidden transform hover:scale-105 transition duration-300 group" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 24) count++ }, 50)">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <span class="px-3 py-1 bg-white bg-opacity-20 backdrop-blur-sm rounded-full text-xs font-semibold text-white">+12%</span>
-                </div>
-                <p class="text-blue-100 text-sm mb-1">Total Audit</p>
-                <h3 class="text-4xl font-bold text-white mb-2" x-text="count"></h3>
-                <p class="text-blue-100 text-xs">Audit terjadwal tahun ini</p>
-            </div>
-        </div>
-
-        <!-- Audit Selesai -->
-        <div class="relative bg-gradient-to-br from-green-500 to-green-600 rounded-2xl shadow-xl p-6 overflow-hidden transform hover:scale-105 transition duration-300 group" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 18) count++ }, 60)">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <span class="px-3 py-1 bg-white bg-opacity-20 backdrop-blur-sm rounded-full text-xs font-semibold text-white">75%</span>
-                </div>
-                <p class="text-green-100 text-sm mb-1">Audit Selesai</p>
-                <h3 class="text-4xl font-bold text-white mb-2" x-text="count"></h3>
-                <p class="text-green-100 text-xs">Laporan telah diselesaikan</p>
-            </div>
-        </div>
-
-        <!-- Audit Berjalan -->
-        <div class="relative bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl shadow-xl p-6 overflow-hidden transform hover:scale-105 transition duration-300 group" x-data="{ count: 0 }" x-init="setInterval(() => { if(count < 6) count++ }, 150)">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full -mr-16 -mt-16"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-10 rounded-full -ml-12 -mb-12"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                        <svg class="w-6 h-6 text-white animate-spin" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <span class="px-3 py-1 bg-white bg-opacity-20 backdrop-blur-sm rounded-full text-xs font-semibold text-white animate-pulse">Live</span>
-                </div>
-                <p class="text-yellow-100 text-sm mb-1">Audit Berjalan</p>
-                <h3 class="text-4xl font-bold text-white mb-2" x-text="count"></h3>
-                <p class="text-yellow-100 text-xs">Sedang dalam proses</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Welcome Banner with Ornaments -->
-    <div class="relative bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 rounded-2xl shadow-2xl p-8 mb-6 text-white overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -mr-32 -mt-32"></div>
-        <div class="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full -ml-24 -mb-24"></div>
-        <div class="absolute top-1/2 right-10 transform -translate-y-1/2">
-            <div class="relative">
-                <div class="w-32 h-32 bg-white bg-opacity-10 rounded-full animate-pulse"></div>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <svg class="w-16 h-16 text-white opacity-50" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-        <div class="relative z-10">
-            <div class="flex items-center mb-3">
-                <span class="text-4xl mr-3 animate-bounce">👋</span>
-                <h3 class="text-3xl font-bold">Selamat datang kembali!</h3>
-            </div>
-            <p class="text-xl font-semibold mb-2">{{ Auth::user()->name }}</p>
-            <p class="text-blue-100 max-w-2xl">Kelola dan pantau seluruh aktivitas audit dari dashboard ini. Sistem terintegrasi untuk efisiensi maksimal.</p>
-            <div class="flex items-center space-x-4 mt-4">
-                <div class="flex items-center">
-                    <div class="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                    <span class="text-sm text-blue-100">Sistem Online</span>
-                </div>
-                <div class="flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                    </svg>
-                    <span class="text-sm text-blue-100">{{ now()->translatedFormat('H:i') }} WIB</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Charts Section with Enhanced Design -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Audit Per Bulan -->
-        <div class="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition duration-300 border border-gray-100" x-data="{ show: false }" x-init="setTimeout(() => show = true, 200)">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h4 class="text-lg font-bold text-gray-800 flex items-center">
-                        <span class="w-1 h-6 bg-blue-600 rounded-full mr-2"></span>
-                        Audit Per Bulan
-                    </h4>
-                    <p class="text-xs text-gray-500 mt-1">Statistik 6 bulan terakhir</p>
-                </div>
-                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="h-64 flex items-end justify-between space-x-3">
-                <div class="flex-1 group cursor-pointer" style="height: 40%">
-                    <div class="h-full bg-gradient-to-t from-blue-400 to-blue-500 rounded-t-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-300 relative">
-                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded">4</div>
-                    </div>
-                </div>
-                <div class="flex-1 group cursor-pointer" style="height: 60%">
-                    <div class="h-full bg-gradient-to-t from-blue-400 to-blue-500 rounded-t-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-300 relative">
-                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded">6</div>
-                    </div>
-                </div>
-                <div class="flex-1 group cursor-pointer" style="height: 80%">
-                    <div class="h-full bg-gradient-to-t from-blue-500 to-blue-600 rounded-t-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 relative">
-                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded">8</div>
-                    </div>
-                </div>
-                <div class="flex-1 group cursor-pointer" style="height: 95%">
-                    <div class="h-full bg-gradient-to-t from-blue-600 to-blue-700 rounded-t-xl hover:from-blue-700 hover:to-blue-800 transition-all duration-300 relative">
-                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded">10</div>
-                    </div>
-                </div>
-                <div class="flex-1 group cursor-pointer" style="height: 70%">
-                    <div class="h-full bg-gradient-to-t from-blue-500 to-blue-600 rounded-t-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 relative">
-                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded">7</div>
-                    </div>
-                </div>
-                <div class="flex-1 group cursor-pointer" style="height: 50%">
-                    <div class="h-full bg-gradient-to-t from-blue-400 to-blue-500 rounded-t-xl hover:from-blue-500 hover:to-blue-600 transition-all duration-300 relative">
-                        <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-800 text-white text-xs px-2 py-1 rounded">5</div>
-                    </div>
-                </div>
-            </div>
-            <div class="flex justify-between mt-4 text-xs font-medium text-gray-500">
-                <span>Jul</span>
-                <span>Agu</span>
-                <span>Sep</span>
-                <span>Okt</span>
-                <span>Nov</span>
-                <span>Des</span>
-            </div>
-        </div>
-
-        <!-- Status Temuan Audit - Pie Chart -->
-        <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl shadow-xl p-6 hover:shadow-2xl transition duration-300 border border-gray-100" x-data="{
-            hoveredIndex: null,
-            data: [
-                { label: 'Sesuai', value: 45, color: '#10b981', icon: '✓' },
-                { label: 'Tidak Sesuai', value: 30, color: '#ef4444', icon: '✗' },
-                { label: 'Menyimpang', value: 15, color: '#f59e0b', icon: '⚠' },
-                { label: 'Melampaui', value: 10, color: '#3b82f6', icon: '↑' }
-            ]
-        }">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h4 class="text-lg font-bold text-gray-800 flex items-center">
-                        <span class="w-1 h-6 bg-gradient-to-b from-green-600 to-red-600 rounded-full mr-2"></span>
-                        Kategori Temuan Audit
-                    </h4>
-                    <p class="text-xs text-gray-500 mt-1">Distribusi hasil audit</p>
-                </div>
-                <div class="w-10 h-10 bg-gradient-to-br from-green-100 to-red-100 rounded-xl flex items-center justify-center">
-                    <svg class="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/>
-                        <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/>
-                    </svg>
-                </div>
-            </div>
-            <div class="flex items-center justify-between gap-6">
-                <div class="flex-1 flex items-center justify-center relative">
-                    <svg viewBox="0 0 200 200" class="w-72 h-72">
-                        <!-- Sesuai 45% -->
-                        <path d="M 100 25 A 75 75 0 0 1 175 100 L 100 100 Z" fill="#10b981" class="cursor-pointer transition-all duration-300 drop-shadow-lg" :class="hoveredIndex === 0 ? 'opacity-100' : 'opacity-90'" @mouseenter="hoveredIndex = 0" @mouseleave="hoveredIndex = null" transform-origin="100 100" :style="hoveredIndex === 0 ? 'transform: scale(1.08)' : ''"/>
-                        <!-- Tidak Sesuai 30% -->
-                        <path d="M 175 100 A 75 75 0 0 1 100 175 L 100 100 Z" fill="#ef4444" class="cursor-pointer transition-all duration-300 drop-shadow-lg" :class="hoveredIndex === 1 ? 'opacity-100' : 'opacity-90'" @mouseenter="hoveredIndex = 1" @mouseleave="hoveredIndex = null" transform-origin="100 100" :style="hoveredIndex === 1 ? 'transform: scale(1.08)' : ''"/>
-                        <!-- Menyimpang 15% -->
-                        <path d="M 100 175 A 75 75 0 0 1 46.4 154 L 100 100 Z" fill="#f59e0b" class="cursor-pointer transition-all duration-300 drop-shadow-lg" :class="hoveredIndex === 2 ? 'opacity-100' : 'opacity-90'" @mouseenter="hoveredIndex = 2" @mouseleave="hoveredIndex = null" transform-origin="100 100" :style="hoveredIndex === 2 ? 'transform: scale(1.08)' : ''"/>
-                        <!-- Melampaui 10% -->
-                        <path d="M 46.4 154 A 75 75 0 0 1 100 25 L 100 100 Z" fill="#3b82f6" class="cursor-pointer transition-all duration-300 drop-shadow-lg" :class="hoveredIndex === 3 ? 'opacity-100' : 'opacity-90'" @mouseenter="hoveredIndex = 3" @mouseleave="hoveredIndex = null" transform-origin="100 100" :style="hoveredIndex === 3 ? 'transform: scale(1.08)' : ''/>
-                        
-                        <!-- Center hole with gradient -->
-                        <circle cx="100" cy="100" r="55" fill="url(#centerGradient)"/>
-                        <defs>
-                            <linearGradient id="centerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#f9fafb;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#f3f4f6;stop-opacity:1" />
-                            </linearGradient>
-                        </defs>
-                    
-                        <!-- Percentage on hover -->
-                        <text x="100" y="105" text-anchor="middle" class="text-3xl font-bold transition-opacity duration-300" :class="hoveredIndex !== null ? 'opacity-100' : 'opacity-0'" :fill="data[hoveredIndex]?.color || '#000'">
-                            <tspan x-text="data[hoveredIndex]?.value + '%'"></tspan>
-                        </text>
-                    </svg>
-                </div>
+    @if($userRole === 'auditor')
+        <!-- AUDITOR DASHBOARD - MODERN COLORFUL STYLE -->
+        <div class="space-y-6">
+            
+            <!-- Top Stats Cards - Colorful Gradient Style -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <!-- Legend -->
-                <div class="flex-1 space-y-3">
-                    <template x-for="(item, index) in data" :key="index">
-                        <div class="flex items-center justify-between p-3 rounded-xl transition-all duration-300 cursor-pointer" :class="hoveredIndex === index ? 'bg-gray-100 shadow-md scale-105' : 'bg-white shadow'" @mouseenter="hoveredIndex = index" @mouseleave="hoveredIndex = null">
-                            <div class="flex items-center space-x-3">
-                                <div class="w-4 h-4 rounded-full shadow-inner" :style="`background-color: ${item.color}`"></div>
-                                <span class="text-sm font-semibold text-gray-700" x-text="item.icon + ' ' + item.label"></span>
+                <!-- Card 1: Program Aktif (Warm Gradient) -->
+                <div class="relative rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-400 to-pink-500"></div>
+                    <!-- Large decorative circles -->
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full -mr-24 -mt-24"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -ml-20 -mb-20"></div>
+                    <div class="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full"></div>
+                    
+                    <div class="relative p-8 text-white">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium mb-2">Program Aktif</p>
+                                <h3 class="text-6xl font-bold mb-3">{{ $activePrograms }}</h3>
+                                <p class="text-white/80 text-sm">
+                                    @if($activePrograms > 0)
+                                        Sedang berjalan
+                                    @else
+                                        Belum ada program
+                                    @endif
+                                </p>
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="text-lg font-bold text-gray-800" x-text="item.value + '%'"></span>
-                                <span class="text-xs text-gray-500" x-text="'(' + Math.round(item.value) + ')'"></span>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Quick Access with Enhanced Design -->
-    <div class="mb-6">
-        <div class="flex items-center justify-between mb-4">
-            <h4 class="text-xl font-bold text-gray-800 flex items-center">
-                <span class="w-1 h-8 bg-blue-600 rounded-full mr-3"></span>
-                Quick Access
-            </h4>
-            <button class="text-blue-600 hover:text-blue-700 text-sm font-semibold flex items-center">
-                Lihat Semua
-                <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                </svg>
-            </button>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="#" class="group relative bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-300"></div>
-                <div class="relative z-10">
-                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition duration-300">Buat Audit Baru</p>
-                </div>
-            </a>
-            <a href="#" class="group relative bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-green-50 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-300"></div>
-                <div class="relative z-10">
-                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-800 group-hover:text-green-600 transition duration-300">Lihat Laporan</p>
-                </div>
-            </a>
-            <a href="#" class="group relative bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-purple-50 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-300"></div>
-                <div class="relative z-10">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-800 group-hover:text-purple-600 transition duration-300">Timeline RKIA</p>
-                </div>
-            </a>
-            <a href="#" class="group relative bg-white rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all duration-300 text-center transform hover:-translate-y-2 overflow-hidden">
-                <div class="absolute top-0 right-0 w-20 h-20 bg-orange-50 rounded-full -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-300"></div>
-                <div class="relative z-10">
-                    <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                        <svg class="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                        </svg>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-800 group-hover:text-orange-600 transition duration-300">Kelola Users</p>
-                </div>
-            </a>
-        </div>
-    </div>
-    <!-- Recent Activities with Enhanced Design -->
-    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden" x-data="{ show: false }" x-init="setTimeout(() => show = true, 600)">
-        <div class="bg-gradient-to-r from-gray-50 to-gray-100 p-6 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                <h4 class="text-lg font-bold text-gray-800 flex items-center">
-                    <span class="w-1 h-6 bg-blue-600 rounded-full mr-2"></span>
-                    Aktivitas Terbaru
-                    <span class="ml-3 px-2 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full">3 Baru</span>
-                </h4>
-                <button class="text-blue-600 hover:text-blue-700 text-sm font-semibold">Lihat Semua</button>
-            </div>
-        </div>
-        <div class="divide-y divide-gray-100" x-show="show" x-transition>
-            <div class="p-5 hover:bg-blue-50 transition duration-200 transform hover:translate-x-2 cursor-pointer group">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start space-x-4">
-                        <div class="relative">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <div class="w-14 h-14 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
                                     <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <div class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse"></div>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800 mb-1">Audit Keuangan Q4 2025 dimulai</p>
-                            <p class="text-xs text-gray-500 flex items-center">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                                2 jam yang lalu
-                            </p>
                         </div>
                     </div>
-                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-bold rounded-full">Baru</span>
                 </div>
+
+                <!-- Card 2: Timeline Aktif (Cool Blue Gradient) -->
+                <div class="relative rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-400"></div>
+                    <!-- Large decorative circles -->
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full -mr-24 -mt-24"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -ml-20 -mb-20"></div>
+                    <div class="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full"></div>
+                    
+                    <div class="relative p-8 text-white">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium mb-2">Timeline Aktif</p>
+                                <h3 class="text-6xl font-bold mb-3">{{ $activeTimelines }}</h3>
+                                <p class="text-white/80 text-sm">
+                                    @if($activeTimelines > 0)
+                                        Tahun {{ date('Y') }}
+                                    @else
+                                        Belum ada timeline
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="w-14 h-14 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Audit Selesai (Fresh Green Gradient) -->
+                <div class="relative rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-300 via-green-400 to-teal-400"></div>
+                    <!-- Large decorative circles -->
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full -mr-24 -mt-24"></div>
+                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -ml-20 -mb-20"></div>
+                    <div class="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full"></div>
+                    
+                    <div class="relative p-8 text-white">
+                        <div class="flex items-start justify-between mb-6">
+                            <div>
+                                <p class="text-white/90 text-sm font-medium mb-2">Audit Selesai</p>
+                                <h3 class="text-6xl font-bold mb-3">{{ $completedPrograms }}</h3>
+                                <p class="text-white/80 text-sm">
+                                    @if($completedPrograms > 0)
+                                        Program completed
+                                    @else
+                                        Belum ada yang selesai
+                                    @endif
+                                </p>
+                            </div>
+                            <div class="w-14 h-14 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            <div class="p-5 hover:bg-green-50 transition duration-200 transform hover:translate-x-2 cursor-pointer group">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Bar Chart: Monthly Statistics -->
+                <div class="lg:col-span-2 bg-white rounded-3xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Statistik Program Audit</h3>
+                        <div class="flex items-center space-x-4 text-sm">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-cyan-400 rounded-full mr-2"></div>
+                                <span class="text-gray-600">Dibuat</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 bg-purple-400 rounded-full mr-2"></div>
+                                <span class="text-gray-600">Selesai</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Simple Bar Chart -->
+                    <div class="h-64 flex items-end justify-between space-x-2">
+                        @foreach($monthlyStats as $stat)
+                        <div class="flex-1 flex flex-col items-center">
+                            <div class="w-full flex items-end justify-center space-x-1 h-48">
+                                <!-- Created bar -->
+                                <div class="flex-1 bg-gradient-to-t from-cyan-400 to-cyan-300 rounded-t-lg hover:from-cyan-500 hover:to-cyan-400 transition-all cursor-pointer relative group"
+                                     style="height: {{ $stat['created'] > 0 ? ($stat['created'] * 20) : 5 }}%">
+                                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                        {{ $stat['created'] }} dibuat
+                                    </div>
+                                </div>
+                                <!-- Completed bar -->
+                                <div class="flex-1 bg-gradient-to-t from-purple-400 to-purple-300 rounded-t-lg hover:from-purple-500 hover:to-purple-400 transition-all cursor-pointer relative group"
+                                     style="height: {{ $stat['completed'] > 0 ? ($stat['completed'] * 20) : 5 }}%">
+                                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                                        {{ $stat['completed'] }} selesai
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-2 font-medium">{{ $stat['month'] }}</p>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Donut Chart: Question Status Distribution -->
+                <div class="bg-white rounded-3xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Status Pertanyaan</h3>
+                    
+                    <!-- Donut Chart (CSS-based) -->
+                    <div class="flex items-center justify-center mb-6">
+                        <div class="relative w-48 h-48">
+                            <!-- Donut segments -->
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                                <!-- Background circle -->
+                                <circle cx="50" cy="50" r="40" fill="none" stroke="#f3f4f6" stroke-width="20"/>
+                                
+                                @php
+                                    $total = $questionDistribution['open'] + $questionDistribution['in_progress'] + $questionDistribution['closed'];
+                                    $openPercent = $total > 0 ? ($questionDistribution['open'] / $total) * 100 : 0;
+                                    $inProgressPercent = $total > 0 ? ($questionDistribution['in_progress'] / $total) * 100 : 0;
+                                    $closedPercent = $total > 0 ? ($questionDistribution['closed'] / $total) * 100 : 0;
+                                    
+                                    $circumference = 2 * 3.14159 * 40;
+                                    $openDash = ($openPercent / 100) * $circumference;
+                                    $inProgressDash = ($inProgressPercent / 100) * $circumference;
+                                    $closedDash = ($closedPercent / 100) * $circumference;
+                                    
+                                    $openOffset = 0;
+                                    $inProgressOffset = $openDash;
+                                    $closedOffset = $openDash + $inProgressDash;
+                                @endphp
+                                
+                                <!-- Open (Red/Pink) -->
+                                <circle cx="50" cy="50" r="40" fill="none" 
+                                        stroke="#fb7185" stroke-width="20"
+                                        stroke-dasharray="{{ $openDash }} {{ $circumference }}"
+                                        stroke-dashoffset="{{ $openOffset }}"
+                                        class="transition-all duration-500"/>
+                                
+                                <!-- In Progress (Cyan) -->
+                                <circle cx="50" cy="50" r="40" fill="none" 
+                                        stroke="#67e8f9" stroke-width="20"
+                                        stroke-dasharray="{{ $inProgressDash }} {{ $circumference }}"
+                                        stroke-dashoffset="-{{ $inProgressOffset }}"
+                                        class="transition-all duration-500"/>
+                                
+                                <!-- Closed (Green) -->
+                                <circle cx="50" cy="50" r="40" fill="none" 
+                                        stroke="#6ee7b7" stroke-width="20"
+                                        stroke-dasharray="{{ $closedDash }} {{ $circumference }}"
+                                        stroke-dashoffset="-{{ $closedOffset }}"
+                                        class="transition-all duration-500"/>
                             </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800 mb-1">Laporan Audit Operasional telah diselesaikan</p>
-                            <p class="text-xs text-gray-500 flex items-center">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                                5 jam yang lalu
-                            </p>
-                        </div>
-                    </div>
-                    <span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Selesai</span>
-                </div>
-            </div>
-            <div class="p-5 hover:bg-yellow-50 transition duration-200 transform hover:translate-x-2 cursor-pointer group">
-                <div class="flex items-start justify-between">
-                    <div class="flex items-start space-x-4">
-                        <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-gray-800 mb-1">Temuan kritis pada Audit IT memerlukan tindak lanjut</p>
-                            <p class="text-xs text-gray-500 flex items-center">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                                </svg>
-                                1 hari yang lalu
-                            </p>
+                            
+                            <!-- Center text -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-center">
+                                    <p class="text-4xl font-bold text-gray-900">{{ $totalQuestions }}</p>
+                                    <p class="text-sm text-gray-500 mt-1">Total</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs font-bold rounded-full">Perhatian</span>
+                    
+                    <!-- Legend with colorful badges -->
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-xl hover:from-pink-100 hover:to-red-100 transition-all">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-gradient-to-br from-pink-400 to-red-400 rounded-full mr-3 shadow-sm"></div>
+                                <span class="text-sm font-medium text-gray-700">Open</span>
+                            </div>
+                            <span class="text-lg font-bold text-gray-900">{{ $openQuestions }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl hover:from-cyan-100 hover:to-blue-100 transition-all">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full mr-3 shadow-sm"></div>
+                                <span class="text-sm font-medium text-gray-700">In Progress</span>
+                            </div>
+                            <span class="text-lg font-bold text-gray-900">{{ $inProgressQuestions }}</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl hover:from-green-100 hover:to-emerald-100 transition-all">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full mr-3 shadow-sm"></div>
+                                <span class="text-sm font-medium text-gray-700">Closed</span>
+                            </div>
+                            <span class="text-lg font-bold text-gray-900">{{ $closedQuestions }}</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Recent Programs -->
+            <div class="bg-white rounded-3xl shadow-lg p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Program Terbaru</h3>
+                    <a href="{{ route('rkia.program') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                        Lihat Semua →
+                    </a>
+                </div>
+                <div class="space-y-3">
+                    @forelse($recentPrograms as $index => $program)
+                        @php
+                            $gradients = [
+                                'from-purple-400 to-pink-500',
+                                'from-blue-400 to-cyan-500',
+                                'from-green-400 to-emerald-500',
+                                'from-orange-400 to-red-500',
+                                'from-indigo-400 to-purple-500',
+                            ];
+                            $gradient = $gradients[$index % count($gradients)];
+                        @endphp
+                        <a href="{{ route('audit-programs.show', $program) }}" 
+                           class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl hover:from-gray-100 hover:to-gray-200 hover:shadow-md transition-all group">
+                            <div class="flex items-center flex-1 min-w-0">
+                                <div class="w-14 h-14 bg-gradient-to-br {{ $gradient }} rounded-2xl flex items-center justify-center text-white font-bold text-base mr-4 flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg">
+                                    {{ substr($program->auditTimeline->department->code ?? 'N/A', 0, 2) }}
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-bold text-gray-900 truncate text-base">{{ $program->program_name }}</p>
+                                    <p class="text-sm text-gray-600 mt-1">{{ $program->auditTimeline->department->name ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+                            <span class="px-4 py-2 {{ $program->status === 'active' ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' : ($program->status === 'draft' ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-700' : 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white') }} text-xs font-bold rounded-xl ml-4 flex-shrink-0 shadow-sm">
+                                {{ ucfirst($program->status) }}
+                            </span>
+                        </a>
+                    @empty
+                        <div class="text-center py-12">
+                            <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                            </div>
+                            <p class="text-gray-600 font-medium mb-4">Belum ada program audit</p>
+                            <a href="{{ route('rkia.timeline') }}" class="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all">
+                                Buat Timeline Audit
+                            </a>
+                        </div>
+                    @endforelse
                 </div>
             </div>
+
         </div>
-    </div>
 
-    <style>
-        @keyframes blob {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(20px, -50px) scale(1.1); }
-            50% { transform: translate(-20px, 20px) scale(0.9); }
-            75% { transform: translate(50px, 50px) scale(1.05); }
-        }
-        .animate-blob {
-            animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-            animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-            animation-delay: 4s;
-        }
-    </style>
-
+    @else
+        <!-- Keep existing dashboard for other roles -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-2xl font-bold mb-4">Dashboard {{ ucfirst($userRole) }}</h2>
+            <p class="text-gray-600">Selamat datang, {{ Auth::user()->name }}</p>
+        </div>
+    @endif
 
 </x-app-layout>

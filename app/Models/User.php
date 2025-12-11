@@ -26,6 +26,8 @@ class User extends Authenticatable
         'department',
         'position',
         'role_id',
+        'department_id',
+        'is_department_head',
         'is_active',
         'password',
         'last_login_at',
@@ -52,6 +54,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
             'is_active' => 'boolean',
+            'is_department_head' => 'boolean',
             'password' => 'hashed',
         ];
     }
@@ -59,5 +62,36 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    /**
+     * Check if user has specific role
+     */
+    public function hasRole(string $roleName): bool
+    {
+        return $this->role && strtolower($this->role->name) === strtolower($roleName);
+    }
+
+    /**
+     * Check if user has any of the given roles
+     */
+    public function hasAnyRole(array $roles): bool
+    {
+        if (!$this->role) {
+            return false;
+        }
+        
+        foreach ($roles as $role) {
+            if (strtolower($this->role->name) === strtolower($role)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }
