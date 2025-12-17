@@ -23,7 +23,7 @@ class TimelineImport implements ToModel, WithStartRow
 
     public function startRow(): int
     {
-        return 2; // Skip header row
+        return 5; // Skip instruction rows (3 rows) and header row (1 row)
     }
 
     public function model(array $row)
@@ -33,13 +33,13 @@ class TimelineImport implements ToModel, WithStartRow
         // Column 1: Nama Departemen
         // Column 2: Tanggal Mulai
         // Column 3: Tanggal Selesai
-        // Column 4: Aktif (Ya/Tidak)
+        // Column 4: Aktif (TRUE/FALSE checkbox)
         // Column 5: Catatan
         
         $departmentCode = trim($row[0] ?? '');
-        $startDate = trim($row[2] ?? '');
-        $endDate = trim($row[3] ?? '');
-        $isActiveValue = trim($row[4] ?? 'Tidak');
+        $startDate = $row[2] ?? '';
+        $endDate = $row[3] ?? '';
+        $isActiveValue = $row[4] ?? false;
         $notes = trim($row[5] ?? '');
         
         // Skip if no department code
@@ -64,8 +64,9 @@ class TimelineImport implements ToModel, WithStartRow
             return null;
         }
 
-        // Parse is_active
-        $isActive = strtolower($isActiveValue) === 'ya';
+        // Parse is_active from checkbox value
+        // Excel checkbox returns: TRUE, FALSE, 1, 0, "TRUE", "FALSE", "Ya", "Tidak"
+        $isActive = $this->parseCheckboxValue($isActiveValue);
 
         // Only create if active
         if (!$isActive) {
@@ -77,17 +78,12 @@ class TimelineImport implements ToModel, WithStartRow
             throw new \Exception("Tanggal mulai dan selesai harus diisi untuk departemen {$departmentCode}.");
         }
 
-        // Convert Excel date serial number to Carbon date
-        // Excel stores dates as numbers (e.g., 46000 = 2025-12-09)
+        // Parse dates - support multiple formats
         try {
-            if (is_numeric($startDate)) {
-                $startDate = Date::excelToDateTimeObject($startDate)->format('Y-m-d');
-            }
-            if (is_numeric($endDate)) {
-                $endDate = Date::excelToDateTimeObject($endDate)->format('Y-m-d');
-            }
+            $startDate = $this->parseDate($startDate, $departmentCode);
+            $endDate = $this->parseDate($endDate, $departmentCode);
         } catch (\Exception $e) {
-            throw new \Exception("Format tanggal tidak valid untuk departemen {$departmentCode}. Gunakan format YYYY-MM-DD atau format tanggal Excel.");
+            throw new \Exception("Format tanggal tidak valid untuk departemen {$departmentCode}. " . $e->getMessage());
         }
 
         $this->rowCount++;
@@ -108,5 +104,59 @@ class TimelineImport implements ToModel, WithStartRow
     public function getRowCount()
     {
         return $this->rowCount;
+    }
+
+    /**
+     * Parse date from various formats
+     * Supports: MM-DD, YYYY-MM-DD, Excel serial number
+     */
+    private function parseDate($date, $departmentCode): string
+    {
+        // If Excel serial number
+        if (is_numeric($date) && $date > 1000) {
+            return Date::excelToDateTimeObject($date)->format('Y-m-d');
+        }
+
+        $dateStr = trim($date);
+
+        // If format MM-DD (e.g., 01-15)
+        if (preg_match('/^(\d{1,2})-(\d{1,2})$/', $dateStr, $matches)) {
+            $month = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
+            $day = str_pad($matches[2], 2, '0', STR_PAD_LEFT);
+            return $this->auditYear . '-' . $month . '-' . $day;
+        }
+
+        // If format YYYY-MM-DD (backward compatibility)
+        if (preg_match('/^\d{4}-\d{1,2}-\d{1,2}$/', $dateStr)) {
+            return Carbon::parse($dateStr)->format('Y-m-d');
+        }
+
+        throw new \Exception("Gunakan format MM-DD (contoh: 01-15) atau YYYY-MM-DD");
+    }
+
+    /**
+     * Parse checkbox value from Excel
+     * Supports: TRUE, FALSE, 1, 0, "TRUE", "FALSE", "Ya", "Tidak", true, false
+     */
+    private function parseCheckboxValue($value): bool
+    {
+        // Handle boolean values
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        // Handle numeric values
+        if (is_numeric($value)) {
+            return (int)$value === 1;
+        }
+
+        // Handle string values
+        if (is_string($value)) {
+            $value = strtolower(trim($value));
+            return in_array($value, ['true', '1', 'ya', 'yes', 'y']);
+        }
+
+        // Default to false
+        return false;
     }
 }

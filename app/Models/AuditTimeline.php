@@ -16,6 +16,8 @@ class AuditTimeline extends Model
         'department_id',
         'start_date',
         'end_date',
+        'actual_start_date',
+        'actual_end_date',
         'is_active',
         'status',
         'created_by',
@@ -29,6 +31,8 @@ class AuditTimeline extends Model
         'email_sent' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
+        'actual_start_date' => 'date',
+        'actual_end_date' => 'date',
         'email_sent_at' => 'datetime',
     ];
 

@@ -1,302 +1,532 @@
 <x-app-layout>
-    <x-slot name="title">Dashboard</x-slot>
+  <x-slot name="title">Dashboard</x-slot>
 
-    @php
-        $userRole = Auth::user()->role->name;
-    @endphp
+  @php
+    $userRole = Auth::user()->role->name;
+    // Set default values jika variabel belum ada
+    $activePrograms = $activePrograms ?? 0;
+    $activeTimelines = $activeTimelines ?? 0;
+    $openQuestions = $openQuestions ?? 0;
+    $completedPrograms = $completedPrograms ?? 0;
+    $progressPercentage = $progressPercentage ?? 0;
+  @endphp
 
-    @if($userRole === 'auditor')
-        <!-- AUDITOR DASHBOARD - MODERN COLORFUL STYLE -->
-        <div class="space-y-6">
-            
-            <!-- Top Stats Cards - Colorful Gradient Style -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Card 1: Program Aktif (Warm Gradient) -->
-                <div class="relative rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-300 via-pink-400 to-pink-500"></div>
-                    <!-- Large decorative circles -->
-                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full -mr-24 -mt-24"></div>
-                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -ml-20 -mb-20"></div>
-                    <div class="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full"></div>
-                    
-                    <div class="relative p-8 text-white">
-                        <div class="flex items-start justify-between mb-6">
-                            <div>
-                                <p class="text-white/90 text-sm font-medium mb-2">Program Aktif</p>
-                                <h3 class="text-6xl font-bold mb-3">{{ $activePrograms }}</h3>
-                                <p class="text-white/80 text-sm">
-                                    @if($activePrograms > 0)
-                                        Sedang berjalan
-                                    @else
-                                        Belum ada program
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
-                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
-                                    <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: Timeline Aktif (Cool Blue Gradient) -->
-                <div class="relative rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-400 via-blue-500 to-cyan-400"></div>
-                    <!-- Large decorative circles -->
-                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full -mr-24 -mt-24"></div>
-                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -ml-20 -mb-20"></div>
-                    <div class="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full"></div>
-                    
-                    <div class="relative p-8 text-white">
-                        <div class="flex items-start justify-between mb-6">
-                            <div>
-                                <p class="text-white/90 text-sm font-medium mb-2">Timeline Aktif</p>
-                                <h3 class="text-6xl font-bold mb-3">{{ $activeTimelines }}</h3>
-                                <p class="text-white/80 text-sm">
-                                    @if($activeTimelines > 0)
-                                        Tahun {{ date('Y') }}
-                                    @else
-                                        Belum ada timeline
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
-                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3: Audit Selesai (Fresh Green Gradient) -->
-                <div class="relative rounded-3xl shadow-xl overflow-hidden group hover:shadow-2xl hover:scale-105 transition-all duration-300">
-                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-300 via-green-400 to-teal-400"></div>
-                    <!-- Large decorative circles -->
-                    <div class="absolute top-0 right-0 w-48 h-48 bg-white/20 rounded-full -mr-24 -mt-24"></div>
-                    <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full -ml-20 -mb-20"></div>
-                    <div class="absolute top-1/2 right-1/4 w-24 h-24 bg-white/5 rounded-full"></div>
-                    
-                    <div class="relative p-8 text-white">
-                        <div class="flex items-start justify-between mb-6">
-                            <div>
-                                <p class="text-white/90 text-sm font-medium mb-2">Audit Selesai</p>
-                                <h3 class="text-6xl font-bold mb-3">{{ $completedPrograms }}</h3>
-                                <p class="text-white/80 text-sm">
-                                    @if($completedPrograms > 0)
-                                        Program completed
-                                    @else
-                                        Belum ada yang selesai
-                                    @endif
-                                </p>
-                            </div>
-                            <div class="w-14 h-14 bg-white/25 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
-                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+  @if($userRole === 'auditor' || $userRole === 'admin')
+  <!-- Statistics Cards Row -->
+  <div class="row mb-4">
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-primary rounded-circle p-3">
+                <i class="ti ti-clipboard-list text-white fs-5"></i>
+              </div>
             </div>
-
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- Bar Chart: Monthly Statistics -->
-                <div class="lg:col-span-2 bg-white rounded-3xl shadow-lg p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-bold text-gray-900">Statistik Program Audit</h3>
-                        <div class="flex items-center space-x-4 text-sm">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-cyan-400 rounded-full mr-2"></div>
-                                <span class="text-gray-600">Dibuat</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-purple-400 rounded-full mr-2"></div>
-                                <span class="text-gray-600">Selesai</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Simple Bar Chart -->
-                    <div class="h-64 flex items-end justify-between space-x-2">
-                        @foreach($monthlyStats as $stat)
-                        <div class="flex-1 flex flex-col items-center">
-                            <div class="w-full flex items-end justify-center space-x-1 h-48">
-                                <!-- Created bar -->
-                                <div class="flex-1 bg-gradient-to-t from-cyan-400 to-cyan-300 rounded-t-lg hover:from-cyan-500 hover:to-cyan-400 transition-all cursor-pointer relative group"
-                                     style="height: {{ $stat['created'] > 0 ? ($stat['created'] * 20) : 5 }}%">
-                                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                        {{ $stat['created'] }} dibuat
-                                    </div>
-                                </div>
-                                <!-- Completed bar -->
-                                <div class="flex-1 bg-gradient-to-t from-purple-400 to-purple-300 rounded-t-lg hover:from-purple-500 hover:to-purple-400 transition-all cursor-pointer relative group"
-                                     style="height: {{ $stat['completed'] > 0 ? ($stat['completed'] * 20) : 5 }}%">
-                                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                                        {{ $stat['completed'] }} selesai
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-600 mt-2 font-medium">{{ $stat['month'] }}</p>
-                        </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Donut Chart: Question Status Distribution -->
-                <div class="bg-white rounded-3xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-6">Status Pertanyaan</h3>
-                    
-                    <!-- Donut Chart (CSS-based) -->
-                    <div class="flex items-center justify-center mb-6">
-                        <div class="relative w-48 h-48">
-                            <!-- Donut segments -->
-                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                                <!-- Background circle -->
-                                <circle cx="50" cy="50" r="40" fill="none" stroke="#f3f4f6" stroke-width="20"/>
-                                
-                                @php
-                                    $total = $questionDistribution['open'] + $questionDistribution['in_progress'] + $questionDistribution['closed'];
-                                    $openPercent = $total > 0 ? ($questionDistribution['open'] / $total) * 100 : 0;
-                                    $inProgressPercent = $total > 0 ? ($questionDistribution['in_progress'] / $total) * 100 : 0;
-                                    $closedPercent = $total > 0 ? ($questionDistribution['closed'] / $total) * 100 : 0;
-                                    
-                                    $circumference = 2 * 3.14159 * 40;
-                                    $openDash = ($openPercent / 100) * $circumference;
-                                    $inProgressDash = ($inProgressPercent / 100) * $circumference;
-                                    $closedDash = ($closedPercent / 100) * $circumference;
-                                    
-                                    $openOffset = 0;
-                                    $inProgressOffset = $openDash;
-                                    $closedOffset = $openDash + $inProgressDash;
-                                @endphp
-                                
-                                <!-- Open (Red/Pink) -->
-                                <circle cx="50" cy="50" r="40" fill="none" 
-                                        stroke="#fb7185" stroke-width="20"
-                                        stroke-dasharray="{{ $openDash }} {{ $circumference }}"
-                                        stroke-dashoffset="{{ $openOffset }}"
-                                        class="transition-all duration-500"/>
-                                
-                                <!-- In Progress (Cyan) -->
-                                <circle cx="50" cy="50" r="40" fill="none" 
-                                        stroke="#67e8f9" stroke-width="20"
-                                        stroke-dasharray="{{ $inProgressDash }} {{ $circumference }}"
-                                        stroke-dashoffset="-{{ $inProgressOffset }}"
-                                        class="transition-all duration-500"/>
-                                
-                                <!-- Closed (Green) -->
-                                <circle cx="50" cy="50" r="40" fill="none" 
-                                        stroke="#6ee7b7" stroke-width="20"
-                                        stroke-dasharray="{{ $closedDash }} {{ $circumference }}"
-                                        stroke-dashoffset="-{{ $closedOffset }}"
-                                        class="transition-all duration-500"/>
-                            </svg>
-                            
-                            <!-- Center text -->
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="text-center">
-                                    <p class="text-4xl font-bold text-gray-900">{{ $totalQuestions }}</p>
-                                    <p class="text-sm text-gray-500 mt-1">Total</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Legend with colorful badges -->
-                    <div class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-xl hover:from-pink-100 hover:to-red-100 transition-all">
-                            <div class="flex items-center">
-                                <div class="w-4 h-4 bg-gradient-to-br from-pink-400 to-red-400 rounded-full mr-3 shadow-sm"></div>
-                                <span class="text-sm font-medium text-gray-700">Open</span>
-                            </div>
-                            <span class="text-lg font-bold text-gray-900">{{ $openQuestions }}</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl hover:from-cyan-100 hover:to-blue-100 transition-all">
-                            <div class="flex items-center">
-                                <div class="w-4 h-4 bg-gradient-to-br from-cyan-400 to-blue-400 rounded-full mr-3 shadow-sm"></div>
-                                <span class="text-sm font-medium text-gray-700">In Progress</span>
-                            </div>
-                            <span class="text-lg font-bold text-gray-900">{{ $inProgressQuestions }}</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl hover:from-green-100 hover:to-emerald-100 transition-all">
-                            <div class="flex items-center">
-                                <div class="w-4 h-4 bg-gradient-to-br from-green-400 to-emerald-400 rounded-full mr-3 shadow-sm"></div>
-                                <span class="text-sm font-medium text-gray-700">Closed</span>
-                            </div>
-                            <span class="text-lg font-bold text-gray-900">{{ $closedQuestions }}</span>
-                        </div>
-                    </div>
-                </div>
-
+            <div>
+              <h6 class="mb-0">Program Aktif</h6>
+              <h4 class="mb-0 text-primary">{{ $activePrograms ?? 0 }}</h4>
+              <small class="text-success">Sedang berjalan</small>
             </div>
-
-            <!-- Recent Programs -->
-            <div class="bg-white rounded-3xl shadow-lg p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold text-gray-900">Program Terbaru</h3>
-                    <a href="{{ route('rkia.program') }}" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
-                        Lihat Semua →
-                    </a>
-                </div>
-                <div class="space-y-3">
-                    @forelse($recentPrograms as $index => $program)
-                        @php
-                            $gradients = [
-                                'from-purple-400 to-pink-500',
-                                'from-blue-400 to-cyan-500',
-                                'from-green-400 to-emerald-500',
-                                'from-orange-400 to-red-500',
-                                'from-indigo-400 to-purple-500',
-                            ];
-                            $gradient = $gradients[$index % count($gradients)];
-                        @endphp
-                        <a href="{{ route('audit-programs.show', $program) }}" 
-                           class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl hover:from-gray-100 hover:to-gray-200 hover:shadow-md transition-all group">
-                            <div class="flex items-center flex-1 min-w-0">
-                                <div class="w-14 h-14 bg-gradient-to-br {{ $gradient }} rounded-2xl flex items-center justify-center text-white font-bold text-base mr-4 flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg">
-                                    {{ substr($program->auditTimeline->department->code ?? 'N/A', 0, 2) }}
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="font-bold text-gray-900 truncate text-base">{{ $program->program_name }}</p>
-                                    <p class="text-sm text-gray-600 mt-1">{{ $program->auditTimeline->department->name ?? 'N/A' }}</p>
-                                </div>
-                            </div>
-                            <span class="px-4 py-2 {{ $program->status === 'active' ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white' : ($program->status === 'draft' ? 'bg-gradient-to-r from-gray-300 to-gray-400 text-gray-700' : 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white') }} text-xs font-bold rounded-xl ml-4 flex-shrink-0 shadow-sm">
-                                {{ ucfirst($program->status) }}
-                            </span>
-                        </a>
-                    @empty
-                        <div class="text-center py-12">
-                            <div class="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                                <svg class="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                </svg>
-                            </div>
-                            <p class="text-gray-600 font-medium mb-4">Belum ada program audit</p>
-                            <a href="{{ route('rkia.timeline') }}" class="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 shadow-lg hover:shadow-xl transition-all">
-                                Buat Timeline Audit
-                            </a>
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-
+          </div>
         </div>
-
-    @else
-        <!-- Keep existing dashboard for other roles -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-2xl font-bold mb-4">Dashboard {{ ucfirst($userRole) }}</h2>
-            <p class="text-gray-600">Selamat datang, {{ Auth::user()->name }}</p>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-success rounded-circle p-3">
+                <i class="ti ti-calendar text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Timeline Aktif</h6>
+              <h4 class="mb-0 text-success">{{ $activeTimelines ?? 0 }}</h4>
+              <small class="text-success">Tahun {{ date('Y') }}</small>
+            </div>
+          </div>
         </div>
-    @endif
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-warning rounded-circle p-3">
+                <i class="ti ti-clock text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Pertanyaan Open</h6>
+              <h4 class="mb-0 text-warning">{{ $openQuestions ?? 0 }}</h4>
+              <small class="text-danger">Perlu perhatian</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-info rounded-circle p-3">
+                <i class="ti ti-check text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Audit Selesai</h6>
+              <h4 class="mb-0 text-info">{{ $completedPrograms ?? 0 }}</h4>
+              <small class="text-success">Program completed</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gantt Chart Timeline Visual -->
+  @if(isset($timelines) && $timelines->count() > 0)
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-4">
+        <i class="ti ti-chart-bar me-2"></i>Timeline Visual Tahun {{ $year ?? date('Y') }}
+      </h5>
+
+      <div class="table-responsive">
+        <table class="table table-bordered gantt-chart">
+          <thead class="table-light">
+            <tr>
+              <th width="15%" class="text-center align-middle">Departemen</th>
+              @php
+                $months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+                $colors = [
+                  '#5D87FF', '#49BEFF', '#13DEB9', '#FFAE1F', '#FA896B', 
+                  '#7C8FAC', '#FF6B9D', '#6C5DD3', '#00D4BD', '#FF9F43'
+                ];
+              @endphp
+              @foreach($months as $month)
+                <th class="text-center" style="min-width: 60px;">{{ $month }}</th>
+              @endforeach
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($timelines->sortBy('start_date') as $index => $timeline)
+              <tr>
+                <td class="align-middle">
+                  <div class="d-flex align-items-center">
+                    <div class="rounded p-1 me-2" style="background: {{ $colors[$index % count($colors)] }}20;">
+                      <i class="ti ti-building" style="color: {{ $colors[$index % count($colors)] }};"></i>
+                    </div>
+                    <div>
+                      <strong>{{ $timeline->department->name }}</strong>
+                      <br>
+                      <small class="text-muted">{{ $timeline->start_date->format('d M') }} - {{ $timeline->end_date->format('d M') }}</small>
+                    </div>
+                  </div>
+                </td>
+                @for($month = 1; $month <= 12; $month++)
+                  @php
+                    $startMonth = $timeline->start_date->month;
+                    $endMonth = $timeline->end_date->month;
+                    $isCovered = false;
+                    $coveragePercent = 0;
+                    
+                    if ($month >= $startMonth && $month <= $endMonth) {
+                      $isCovered = true;
+                      $monthStart = \Carbon\Carbon::create($year ?? date('Y'), $month, 1);
+                      $monthEnd = $monthStart->copy()->endOfMonth();
+                      $periodStart = max($timeline->start_date, $monthStart);
+                      $periodEnd = min($timeline->end_date, $monthEnd);
+                      $daysInMonth = $monthStart->daysInMonth;
+                      $coveredDays = $periodStart->diffInDays($periodEnd) + 1;
+                      $coveragePercent = ($coveredDays / $daysInMonth) * 100;
+                    }
+                    $bgColor = $colors[$index % count($colors)];
+                  @endphp
+                  
+                  <td class="text-center align-middle p-1" style="position: relative;">
+                    @if($isCovered)
+                      <div class="gantt-block" 
+                           style="background: {{ $bgColor }}; opacity: {{ $coveragePercent < 100 ? '0.6' : '0.9' }}; height: 40px; border-radius: 4px; position: relative;"
+                           data-bs-toggle="tooltip" 
+                           title="{{ $timeline->department->name }}: {{ $timeline->start_date->format('d M') }} - {{ $timeline->end_date->format('d M') }}">
+                        @if($month == $startMonth)
+                          <small class="text-white fw-bold" style="position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-size: 10px;">
+                            {{ $timeline->start_date->format('d') }}
+                          </small>
+                        @endif
+                        @if($month == $endMonth)
+                          <small class="text-white fw-bold" style="position: absolute; right: 5px; top: 50%; transform: translateY(-50%); font-size: 10px;">
+                            {{ $timeline->end_date->format('d') }}
+                          </small>
+                        @endif
+                      </div>
+                    @else
+                      <div style="height: 40px;"></div>
+                    @endif
+                  </td>
+                @endfor
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  @endif
+
+  <!-- Calendar View with Overlay Lines -->
+  @if(isset($timelines) && $timelines->count() > 0)
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-4">
+        <i class="ti ti-calendar me-2"></i>Calendar View - Timeline Audit {{ $year ?? date('Y') }}
+      </h5>
+
+      <div class="row">
+        @php
+          $monthsIndo = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+          $daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+          $currentYear = $year ?? date('Y');
+          
+          if (($currentYear % 4 == 0 && $currentYear % 100 != 0) || ($currentYear % 400 == 0)) {
+            $daysInMonth[1] = 29;
+          }
+        @endphp
+
+        @foreach($monthsIndo as $monthIndex => $monthName)
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="calendar-month-card">
+              <div class="calendar-month-header">
+                {{ $monthName }} {{ $currentYear }}
+              </div>
+              
+              <div class="calendar-days-header">
+                <div class="calendar-day-name">Min</div>
+                <div class="calendar-day-name">Sen</div>
+                <div class="calendar-day-name">Sel</div>
+                <div class="calendar-day-name">Rab</div>
+                <div class="calendar-day-name">Kam</div>
+                <div class="calendar-day-name">Jum</div>
+                <div class="calendar-day-name">Sab</div>
+              </div>
+
+              <div class="calendar-grid-container">
+                @php
+                  $firstDay = \Carbon\Carbon::create($currentYear, $monthIndex + 1, 1);
+                  $startDayOfWeek = $firstDay->dayOfWeek;
+                  $totalDays = $daysInMonth[$monthIndex];
+                @endphp
+
+                <div class="calendar-dates-grid">
+                  @for($i = 0; $i < $startDayOfWeek; $i++)
+                    <div class="calendar-date-cell empty"></div>
+                  @endfor
+
+                  @for($day = 1; $day <= $totalDays; $day++)
+                    <div class="calendar-date-cell">
+                      <span class="date-number">{{ $day }}</span>
+                    </div>
+                  @endfor
+                </div>
+
+                <div class="calendar-overlay-container">
+                  @foreach($timelines->sortBy('start_date') as $index => $timeline)
+                    @php
+                      $startMonth = $timeline->start_date->month;
+                      $endMonth = $timeline->end_date->month;
+                      $startDay = $timeline->start_date->day;
+                      $endDay = $timeline->end_date->day;
+                      $currentMonth = $monthIndex + 1;
+                      
+                      $shouldDraw = false;
+                      $lineStartDay = 1;
+                      $lineEndDay = $totalDays;
+                      
+                      if ($currentMonth >= $startMonth && $currentMonth <= $endMonth) {
+                        $shouldDraw = true;
+                        if ($currentMonth == $startMonth) {
+                          $lineStartDay = $startDay;
+                        }
+                        if ($currentMonth == $endMonth) {
+                          $lineEndDay = $endDay;
+                        }
+                      }
+                      
+                      $bgColor = $colors[$index % count($colors)];
+                    @endphp
+
+                    @if($shouldDraw)
+                      @php
+                        $cellWidth = 100 / 7;
+                        $rowHeight = 40;
+                        $startPosition = $startDayOfWeek + $lineStartDay - 1;
+                        $endPosition = $startDayOfWeek + $lineEndDay - 1;
+                        $currentPos = $startPosition;
+                        $segments = [];
+                        
+                        while ($currentPos <= $endPosition) {
+                          $row = floor($currentPos / 7);
+                          $col = $currentPos % 7;
+                          $segmentStart = $col;
+                          $segmentEnd = 6;
+                          
+                          if ($row == floor($endPosition / 7)) {
+                            $segmentEnd = $endPosition % 7;
+                          }
+                          
+                          $segments[] = [
+                            'left' => $segmentStart * $cellWidth,
+                            'width' => ($segmentEnd - $segmentStart + 1) * $cellWidth,
+                            'top' => $row * $rowHeight + 15
+                          ];
+                          
+                          $currentPos = ($row + 1) * 7;
+                        }
+                      @endphp
+
+                      @foreach($segments as $segment)
+                        <div class="overlay-line-segment" 
+                             style="background: {{ $bgColor }}; 
+                                    left: {{ $segment['left'] }}%; 
+                                    width: {{ $segment['width'] }}%; 
+                                    top: {{ $segment['top'] }}px;"
+                             data-bs-toggle="tooltip"
+                             title="{{ $timeline->department->name }}: {{ $timeline->start_date->format('d M') }} - {{ $timeline->end_date->format('d M') }}">
+                        </div>
+                      @endforeach
+                    @endif
+                  @endforeach
+                </div>
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+
+      <div class="mt-3 p-3 bg-light rounded">
+        <div class="d-flex flex-wrap gap-3">
+          @foreach($timelines->sortBy('start_date') as $index => $timeline)
+            <div class="d-flex align-items-center">
+              <div style="width: 30px; height: 8px; background: {{ $colors[$index % count($colors)] }}; border-radius: 2px; margin-right: 8px;"></div>
+              <small>{{ $timeline->department->name }}</small>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    </div>
+  </div>
+  @endif
+
+  <!-- Main Dashboard Row -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">Dashboard SI AI KIG</h5>
+          <div id="profit"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="row">
+        <div class="col-12 mb-3">
+          <div class="card">
+            <div class="card-body p-4">
+              <h5 class="card-title mb-3 fw-semibold">Statistik Bulanan</h5>
+              <div class="row align-items-center">
+                <div class="col-7">
+                  <h4 class="fw-semibold mb-3">{{ $progressPercentage ?? 0 }}%</h4>
+                  <div class="d-flex align-items-center mb-2">
+                    <span class="me-1 rounded-circle bg-light-success round-20 d-flex align-items-center justify-content-center">
+                      <i class="ti ti-arrow-up-left text-success"></i>
+                    </span>
+                    <p class="text-dark me-1 fs-3 mb-0">+9%</p>
+                    <p class="fs-3 mb-0">bulan ini</p>
+                  </div>
+                </div>
+                <div class="col-5">
+                  <div class="d-flex justify-content-center">
+                    <div id="grade"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body p-4">
+              <h5 class="card-title mb-3 fw-semibold">Activity Log</h5>
+              <div class="timeline-widget">
+                <div class="timeline-item d-flex align-items-center mb-3">
+                  <div class="timeline-icon bg-primary rounded-circle me-3" style="width: 8px; height: 8px;"></div>
+                  <div>
+                    <p class="mb-0 fs-3">Program audit dibuat</p>
+                    <small class="text-muted">2 menit lalu</small>
+                  </div>
+                </div>
+                <div class="timeline-item d-flex align-items-center mb-3">
+                  <div class="timeline-icon bg-success rounded-circle me-3" style="width: 8px; height: 8px;"></div>
+                  <div>
+                    <p class="mb-0 fs-3">Timeline diupdate</p>
+                    <small class="text-muted">15 menit lalu</small>
+                  </div>
+                </div>
+                <div class="timeline-item d-flex align-items-center mb-3">
+                  <div class="timeline-icon bg-warning rounded-circle me-3" style="width: 8px; height: 8px;"></div>
+                  <div>
+                    <p class="mb-0 fs-3">User login</p>
+                    <small class="text-muted">1 jam lalu</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .gantt-chart {
+      font-size: 12px;
+    }
+    .gantt-chart thead th {
+      background: #f8f9fa;
+      font-weight: 600;
+      padding: 10px 5px;
+      vertical-align: middle;
+    }
+    .gantt-chart tbody td {
+      padding: 5px;
+      vertical-align: middle;
+    }
+    .gantt-block {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .gantt-block:hover {
+      opacity: 1 !important;
+      transform: scale(1.05);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .calendar-month-card {
+      border: 1px solid #E9ECEF;
+      border-radius: 8px;
+      overflow: hidden;
+      background: white;
+    }
+    .calendar-month-header {
+      background: linear-gradient(135deg, #5D87FF 0%, #4570EA 100%);
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .calendar-days-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: #F8F9FA;
+      border-bottom: 1px solid #E9ECEF;
+    }
+    .calendar-day-name {
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748B;
+    }
+    .calendar-grid-container {
+      position: relative;
+      padding: 5px;
+    }
+    .calendar-dates-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .calendar-date-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #F1F5F9;
+      border-radius: 4px;
+      position: relative;
+      min-height: 35px;
+    }
+    .calendar-date-cell.empty {
+      border: none;
+    }
+    .date-number {
+      font-size: 12px;
+      font-weight: 500;
+      color: #334155;
+      z-index: 1;
+      position: relative;
+    }
+    .calendar-overlay-container {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      pointer-events: none;
+    }
+    .overlay-line-segment {
+      position: absolute;
+      height: 8px;
+      border-radius: 4px;
+      opacity: 0.7;
+      pointer-events: all;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .overlay-line-segment:hover {
+      opacity: 1;
+      height: 10px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+  </style>
+
+  @push('scripts')
+  <script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
+  <script src="{{ asset('assets/js/dashboard.js') }}"></script>
+  <script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+    });
+  </script>
+  @endpush
+
+  @else
+  <!-- Dashboard untuk role lain -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-4">Selamat Datang, {{ Auth::user()->name }}</h5>
+          <p>Anda login sebagai <strong>{{ Auth::user()->role->display_name }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  @endif
 
 </x-app-layout>

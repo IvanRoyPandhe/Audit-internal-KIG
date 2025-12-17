@@ -1,0 +1,95 @@
+/* Custom CSS untuk SI AI KIG Dashboard */
+
+/* Active menu styling */
+.sidebar-item.active .sidebar-link {
+    background-color: var(--bs-primary) !important;
+    color: white !important;
+    border-radius: 8px;
+}
+
+.sidebar-item.active .sidebar-link iconify-icon {
+    color: white !important;
+}
+
+/* Hover effects */
+.sidebar-link:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Notification styling */
+.alert.position-fixed {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Modal enhancements */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    border-bottom: 1px solid #eee;
+    padding: 1.5rem;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+/* Button hover effects */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Card hover effects */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .alert.position-fixed {
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+    }
+}

@@ -1,0 +1,74 @@
+========================================
+CARA IMPORT DATABASE KE CPANEL
+========================================
+
+FILE DATABASE:
+--------------
+database_export.sql (46 KB)
+
+CARA IMPORT VIA PHPMYADMIN:
+---------------------------
+1. Login ke cPanel
+2. Buka phpMyAdmin
+3. Create database baru (misal: audit_kig)
+4. Klik database tersebut
+5. Klik tab "Import"
+6. Choose File: database_export.sql
+7. Klik "Go" atau "Import"
+8. Tunggu sampai selesai
+
+CARA IMPORT VIA TERMINAL SSH:
+------------------------------
+1. Upload file database_export.sql ke server
+2. Login via SSH
+3. Jalankan command:
+   mysql -u username -p database_name < database_export.sql
+   
+   Contoh:
+   mysql -u cpanel_user -p audit_kig < database_export.sql
+
+4. Masukkan password database
+5. Tunggu sampai selesai
+
+UPDATE FILE .ENV:
+-----------------
+Setelah import, update file .env di server:
+
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=audit_kig
+DB_USERNAME=your_cpanel_db_user
+DB_PASSWORD=your_cpanel_db_password
+
+VERIFIKASI:
+-----------
+1. Cek di phpMyAdmin apakah semua tabel sudah ada
+2. Test login ke aplikasi
+3. Cek apakah data sudah muncul
+
+TABEL YANG HARUS ADA:
+---------------------
+- audit_answers
+- audit_programs
+- audit_questions
+- audit_timelines
+- audit_years
+- cache
+- cache_locks
+- departments
+- failed_jobs
+- job_batches
+- jobs
+- migrations
+- password_reset_tokens
+- roles
+- sessions
+- users
+
+CATATAN:
+--------
+- File database_export.sql berisi struktur dan data lengkap
+- Pastikan database di cPanel sudah dibuat sebelum import
+- Pastikan user database punya ALL PRIVILEGES
+- Backup database lama jika ada sebelum import

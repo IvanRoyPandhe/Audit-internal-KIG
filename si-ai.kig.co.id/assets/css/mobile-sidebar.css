@@ -1,0 +1,54 @@
+/* Mobile Sidebar Responsive CSS */
+@media (max-width: 991.98px) {
+  .left-sidebar {
+    position: fixed !important;
+    left: -260px !important;
+    top: 0 !important;
+    height: 100vh !important;
+    width: 260px !important;
+    z-index: 1050 !important;
+    transition: left 0.3s ease !important;
+    background: #fff !important;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important;
+  }
+  
+  .left-sidebar.show-sidebar {
+    left: 0 !important;
+  }
+  
+  .body-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  .page-wrapper[data-sidebartype="full"] .body-wrapper {
+    margin-left: 0 !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .left-sidebar {
+    position: fixed;
+    left: 0;
+  }
+  
+  .body-wrapper {
+    margin-left: 260px;
+  }
+}
+
+/* Overlay for mobile */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1040;
+}
+
+.sidebar-overlay.show {
+  display: block;
+}

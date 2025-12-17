@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('role')->latest()->get();
+        $users = User::with('role')->latest()->paginate(15);
         return view('users.index', compact('users'));
     }
 
@@ -28,14 +28,15 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|email|unique:users',
             'employee_id' => 'nullable|string|unique:users',
-            'department' => 'nullable|string',
+            'department_id' => 'nullable|exists:departments,id',
             'position' => 'nullable|string',
             'role_id' => 'required|exists:roles,id',
             'password' => 'required|min:8',
+            'is_active' => 'boolean',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-        $validated['is_active'] = true;
+        $validated['is_active'] = $request->has('is_active');
 
         User::create($validated);
 
@@ -55,11 +56,13 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|email|unique:users,email,' . $user->id,
             'employee_id' => 'nullable|string|unique:users,employee_id,' . $user->id,
-            'department' => 'nullable|string',
+            'department_id' => 'nullable|exists:departments,id',
             'position' => 'nullable|string',
             'role_id' => 'required|exists:roles,id',
             'is_active' => 'boolean',
         ]);
+
+        $validated['is_active'] = $request->has('is_active');
 
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($request->password);
@@ -74,5 +77,17 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus');
+    }
+
+    /**
+     * Display karyawan list (all users)
+     */
+    public function karyawan()
+    {
+        $karyawan = User::with(['role', 'departmentRelation'])
+            ->latest()
+            ->paginate(20);
+        
+        return view('karyawan.index', compact('karyawan'));
     }
 }

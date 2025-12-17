@@ -1,137 +1,148 @@
 <x-app-layout>
-    <x-slot name="title">Edit Timeline Audit</x-slot>
+  <x-slot name="title">Edit Timeline Audit</x-slot>
 
-    <div class="max-w-3xl mx-auto">
-        <!-- Header -->
-        <div class="mb-6">
-            <a href="{{ route('rkia.timeline') }}" class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Kembali ke Timeline
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card">
+        <div class="card-body">
+          <div class="mb-4 d-flex justify-content-between align-items-center">
+            <a href="{{ route('rkia.timeline', $year) }}" class="btn btn-sm btn-light">
+              <i class="ti ti-arrow-left me-2"></i>Kembali
             </a>
-            <h2 class="text-2xl font-bold text-gray-800 mt-4">Edit Timeline Audit</h2>
-            <p class="text-sm text-gray-600 mt-1">Update jadwal audit untuk {{ $timeline->department->name }}</p>
-        </div>
+            <span class="badge bg-primary fs-5">Tahun {{ $year }}</span>
+          </div>
 
-        <!-- Form -->
-        <div class="bg-white rounded-xl shadow p-6">
-            <form action="{{ route('rkia.timeline.update', $timeline) }}" method="POST">
-                @csrf
-                @method('PUT')
+          <h5 class="card-title fw-semibold mb-4">
+            <i class="ti ti-calendar-edit me-2"></i>Edit Timeline Audit - {{ $timeline->department->name }}
+          </h5>
 
-                <div class="space-y-6">
-                    <!-- Tahun Audit -->
-                    <div>
-                        <label for="audit_year" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tahun Audit <span class="text-red-500">*</span>
-                        </label>
-                        <input type="number" name="audit_year" id="audit_year" value="{{ old('audit_year', $timeline->audit_year) }}" 
-                            min="2020" max="2100" required
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('audit_year') border-red-500 @enderror">
-                        @error('audit_year')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+          <form action="{{ route('rkia.timeline.update', [$year, $timeline]) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-                    <!-- Departemen -->
-                    <div>
-                        <label for="department_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Departemen <span class="text-red-500">*</span>
-                        </label>
-                        <select name="department_id" id="department_id" required
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('department_id') border-red-500 @enderror">
-                            @foreach($departments as $dept)
-                                <option value="{{ $dept->id }}" {{ old('department_id', $timeline->department_id) == $dept->id ? 'selected' : '' }}>
-                                    {{ $dept->code }} - {{ $dept->name }}
-                                    @if($dept->seniorManager)
-                                        (SM: {{ $dept->seniorManager->name }})
-                                    @endif
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('department_id')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+            <div class="mb-3">
+              <label for="department_id" class="form-label">Departemen <span class="text-danger">*</span></label>
+              <select name="department_id" id="department_id" class="form-select @error('department_id') is-invalid @enderror" required>
+                @foreach($departments as $dept)
+                  <option value="{{ $dept->id }}" {{ old('department_id', $timeline->department_id) == $dept->id ? 'selected' : '' }}>
+                    {{ $dept->code }} - {{ $dept->name }}
+                    @if($dept->seniorManager)
+                      (SM: {{ $dept->seniorManager->name }})
+                    @endif
+                  </option>
+                @endforeach
+              </select>
+              @error('department_id')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
 
-                    <!-- Tanggal Mulai -->
-                    <div>
-                        <label for="start_date" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tanggal Mulai <span class="text-red-500">*</span>
-                        </label>
-                        <input type="date" name="start_date" id="start_date" value="{{ old('start_date', $timeline->start_date->format('Y-m-d')) }}" required
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('start_date') border-red-500 @enderror">
-                        @error('start_date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+            <!-- Tanggal Rencana Audit -->
+            <div class="card mb-4 border-primary">
+              <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="ti ti-calendar-event me-2"></i>Tanggal Rencana Audit</h6>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="start_date" class="form-label">Tanggal Mulai <span class="text-danger">*</span></label>
+                    <input type="date" name="start_date" id="start_date" 
+                           value="{{ old('start_date', $timeline->start_date->format('Y-m-d')) }}" 
+                           class="form-control @error('start_date') is-invalid @enderror" required>
+                    @error('start_date')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
 
-                    <!-- Tanggal Selesai -->
-                    <div>
-                        <label for="end_date" class="block text-sm font-medium text-gray-700 mb-2">
-                            Tanggal Selesai <span class="text-red-500">*</span>
-                        </label>
-                        <input type="date" name="end_date" id="end_date" value="{{ old('end_date', $timeline->end_date->format('Y-m-d')) }}" required
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('end_date') border-red-500 @enderror">
-                        @error('end_date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Status -->
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
-                            Status Timeline <span class="text-red-500">*</span>
-                        </label>
-                        <select name="status" id="status" required
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                            <option value="scheduled" {{ old('status', $timeline->status) == 'scheduled' ? 'selected' : '' }}>Terjadwal</option>
-                            <option value="ongoing" {{ old('status', $timeline->status) == 'ongoing' ? 'selected' : '' }}>Berjalan</option>
-                            <option value="completed" {{ old('status', $timeline->status) == 'completed' ? 'selected' : '' }}>Selesai</option>
-                            <option value="cancelled" {{ old('status', $timeline->status) == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
-                        </select>
-                    </div>
-
-                    <!-- Status Aktif -->
-                    <div>
-                        <label class="flex items-center">
-                            <input type="checkbox" name="is_active" value="1" {{ old('is_active', $timeline->is_active) ? 'checked' : '' }}
-                                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-700">Timeline Aktif (Departemen mendapat jadwal audit)</span>
-                        </label>
-                        <p class="mt-1 text-xs text-gray-500">Hanya timeline aktif yang akan muncul di Program Audit</p>
-                    </div>
-
-                    <!-- Catatan -->
-                    <div>
-                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">
-                            Catatan
-                        </label>
-                        <textarea name="notes" id="notes" rows="3" 
-                            class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 @error('notes') border-red-500 @enderror"
-                            placeholder="Catatan tambahan untuk timeline ini...">{{ old('notes', $timeline->notes) }}</textarea>
-                        @error('notes')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="end_date" class="form-label">Tanggal Selesai <span class="text-danger">*</span></label>
+                    <input type="date" name="end_date" id="end_date" 
+                           value="{{ old('end_date', $timeline->end_date->format('Y-m-d')) }}" 
+                           class="form-control @error('end_date') is-invalid @enderror" required>
+                    @error('end_date')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
                 </div>
+              </div>
+            </div>
 
-                <!-- Buttons -->
-                <div class="flex items-center justify-end space-x-3 pt-6 border-t mt-6">
-                    <a href="{{ route('rkia.timeline') }}" 
-                        class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        Batal
-                    </a>
-                    <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                        Update Timeline
-                    </button>
+            <!-- Tanggal Realisasi Audit -->
+            <div class="card mb-4 border-success">
+              <div class="card-header bg-success text-white">
+                <h6 class="mb-0"><i class="ti ti-calendar-check me-2"></i>Tanggal Realisasi Audit</h6>
+              </div>
+              <div class="card-body">
+                <div class="alert alert-info" role="alert">
+                  <i class="ti ti-info-circle me-2"></i>
+                  <strong>Info:</strong> Isi tanggal realisasi jika audit tidak berjalan sesuai jadwal rencana.
                 </div>
-            </form>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="actual_start_date" class="form-label">Tanggal Mulai Realisasi</label>
+                    <input type="date" name="actual_start_date" id="actual_start_date" 
+                           value="{{ old('actual_start_date', $timeline->actual_start_date?->format('Y-m-d')) }}" 
+                           class="form-control @error('actual_start_date') is-invalid @enderror">
+                    @error('actual_start_date')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Kosongkan jika sesuai rencana</small>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label for="actual_end_date" class="form-label">Tanggal Selesai Realisasi</label>
+                    <input type="date" name="actual_end_date" id="actual_end_date" 
+                           value="{{ old('actual_end_date', $timeline->actual_end_date?->format('Y-m-d')) }}" 
+                           class="form-control @error('actual_end_date') is-invalid @enderror">
+                    @error('actual_end_date')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Kosongkan jika sesuai rencana</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="status" class="form-label">Status Timeline <span class="text-danger">*</span></label>
+              <select name="status" id="status" class="form-select" required>
+                <option value="scheduled" {{ old('status', $timeline->status) == 'scheduled' ? 'selected' : '' }}>Terjadwal</option>
+                <option value="ongoing" {{ old('status', $timeline->status) == 'ongoing' ? 'selected' : '' }}>Berjalan</option>
+                <option value="completed" {{ old('status', $timeline->status) == 'completed' ? 'selected' : '' }}>Selesai</option>
+                <option value="cancelled" {{ old('status', $timeline->status) == 'cancelled' ? 'selected' : '' }}>Dibatalkan</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label for="notes" class="form-label">Catatan</label>
+              <textarea name="notes" id="notes" rows="3" 
+                        class="form-control @error('notes') is-invalid @enderror" 
+                        placeholder="Catatan tambahan untuk timeline ini...">{{ old('notes', $timeline->notes) }}</textarea>
+              @error('notes')
+                <div class="invalid-feedback">{{ $message }}</div>
+              @enderror
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_active" value="1" 
+                       id="is_active" {{ old('is_active', $timeline->is_active) ? 'checked' : '' }}>
+                <label class="form-check-label" for="is_active">
+                  Timeline Aktif (Departemen mendapat jadwal audit)
+                </label>
+              </div>
+              <small class="text-muted">Hanya timeline aktif yang akan muncul di Program Audit</small>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end">
+              <a href="{{ route('rkia.timeline', $year) }}" class="btn btn-light">Batal</a>
+              <button type="submit" class="btn btn-primary">
+                <i class="ti ti-check me-2"></i>Update Timeline
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
+  </div>
 </x-app-layout>

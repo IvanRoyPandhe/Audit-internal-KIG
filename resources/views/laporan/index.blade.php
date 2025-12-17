@@ -1,82 +1,274 @@
 <x-app-layout>
-    <x-slot name="title">Laporan Audit</x-slot>
+  <x-slot name="title">Laporan Audit</x-slot>
 
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-xl shadow p-4">
-            <div class="text-sm text-gray-600">Total Laporan</div>
-            <div class="text-2xl font-bold text-gray-800">24</div>
+  <!-- Header -->
+  <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+      <div class="row align-items-center">
+        <div class="col-9">
+          <h4 class="fw-semibold mb-8">Laporan Hasil Audit</h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a class="text-muted text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Laporan</li>
+            </ol>
+          </nav>
         </div>
-        <div class="bg-white rounded-xl shadow p-4">
-            <div class="text-sm text-gray-600">Selesai</div>
-            <div class="text-2xl font-bold text-green-600">18</div>
+        <div class="col-3">
+          <div class="text-center mb-n5">
+            <img src="{{ asset('assets/images/breadcrumb/ChatBc.png') }}" alt="" class="img-fluid mb-n4">
+          </div>
         </div>
-        <div class="bg-white rounded-xl shadow p-4">
-            <div class="text-sm text-gray-600">Dalam Proses</div>
-            <div class="text-2xl font-bold text-yellow-600">4</div>
-        </div>
-        <div class="bg-white rounded-xl shadow p-4">
-            <div class="text-sm text-gray-600">Tertunda</div>
-            <div class="text-2xl font-bold text-red-600">2</div>
-        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-bold text-gray-800">Daftar Laporan Audit</h3>
-            <div class="flex gap-3">
-                <input type="text" placeholder="Cari laporan..." class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                    <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/>
-                    </svg>
-                    Buat Laporan
-                </button>
-            </div>
+  <!-- Filter Section -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title fw-semibold mb-3">
+        <i class="ti ti-filter me-2"></i>Filter Laporan
+      </h5>
+      <div class="row">
+        <div class="col-md-3">
+          <label class="form-label">Tahun Audit</label>
+          <select class="form-select">
+            <option value="">Semua Tahun</option>
+            <option value="2025" selected>2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+          </select>
         </div>
+        <div class="col-md-3">
+          <label class="form-label">Departemen</label>
+          <select class="form-select">
+            <option value="">Semua Departemen</option>
+            <option value="1">Finance</option>
+            <option value="2">HR</option>
+            <option value="3">IT</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Status</label>
+          <select class="form-select">
+            <option value="">Semua Status</option>
+            <option value="completed">Selesai</option>
+            <option value="ongoing">Berjalan</option>
+            <option value="scheduled">Terjadwal</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">&nbsp;</label>
+          <button class="btn btn-primary w-100">
+            <i class="ti ti-search me-2"></i>Cari
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach([
-                ['Laporan Audit Keuangan Q1 2025', 'Keuangan', '15 Maret 2025', 'Selesai', 'green'],
-                ['Laporan Audit Operasional', 'Operasional', '20 April 2025', 'Dalam Proses', 'yellow'],
-                ['Laporan Audit IT Security', 'IT', '10 Mei 2025', 'Selesai', 'green'],
-                ['Laporan Audit Kepatuhan', 'Compliance', '25 Mei 2025', 'Tertunda', 'red'],
-                ['Laporan Audit SDM', 'SDM', '5 Juni 2025', 'Dalam Proses', 'yellow'],
-                ['Laporan Audit Procurement', 'Procurement', '15 Juni 2025', 'Selesai', 'green']
-            ] as $laporan)
-            <div class="border border-gray-200 rounded-xl p-4 hover:shadow-lg transition">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
-                    <span class="px-2 py-1 bg-{{ $laporan[4] }}-100 text-{{ $laporan[4] }}-700 text-xs font-semibold rounded-full">
-                        {{ $laporan[3] }}
-                    </span>
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-primary rounded-circle p-3">
+                <i class="ti ti-file-text text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Total Laporan</h6>
+              <h4 class="mb-0 text-primary">24</h4>
+              <small class="text-muted">Tahun 2025</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-success rounded-circle p-3">
+                <i class="ti ti-check text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Selesai</h6>
+              <h4 class="mb-0 text-success">18</h4>
+              <small class="text-success">75%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-warning rounded-circle p-3">
+                <i class="ti ti-clock text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Berjalan</h6>
+              <h4 class="mb-0 text-warning">4</h4>
+              <small class="text-warning">17%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <div class="bg-info rounded-circle p-3">
+                <i class="ti ti-calendar text-white fs-5"></i>
+              </div>
+            </div>
+            <div>
+              <h6 class="mb-0">Terjadwal</h6>
+              <h4 class="mb-0 text-info">2</h4>
+              <small class="text-info">8%</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Laporan List -->
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="card-title fw-semibold mb-0">
+          <i class="ti ti-file-report me-2"></i>Daftar Laporan Audit
+        </h5>
+        <button class="btn btn-success">
+          <i class="ti ti-download me-2"></i>Export Excel
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th width="5%">No</th>
+              <th>Departemen</th>
+              <th>Periode Audit</th>
+              <th>Jumlah Temuan</th>
+              <th width="10%" class="text-center">Status</th>
+              <th width="12%" class="text-center">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @php
+              $dummyData = [
+                ['dept' => 'Finance', 'periode' => '15 Jan - 28 Feb 2025', 'temuan' => 12, 'status' => 'completed', 'color' => 'success'],
+                ['dept' => 'Human Resources', 'periode' => '01 Feb - 15 Mar 2025', 'temuan' => 8, 'status' => 'completed', 'color' => 'success'],
+                ['dept' => 'IT Department', 'periode' => '10 Mar - 20 Apr 2025', 'temuan' => 15, 'status' => 'ongoing', 'color' => 'warning'],
+                ['dept' => 'Operations', 'periode' => '05 Apr - 30 May 2025', 'temuan' => 6, 'status' => 'ongoing', 'color' => 'warning'],
+                ['dept' => 'Marketing', 'periode' => '01 Jun - 15 Jul 2025', 'temuan' => 0, 'status' => 'scheduled', 'color' => 'info'],
+              ];
+            @endphp
+
+            @foreach($dummyData as $index => $data)
+            <tr>
+              <td class="text-center">{{ $index + 1 }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="bg-primary bg-opacity-10 rounded p-2 me-2">
+                    <i class="ti ti-building text-primary"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-0">{{ $data['dept'] }}</h6>
+                    <small class="text-muted">DEPT-{{ str_pad($index + 1, 3, '0', STR_PAD_LEFT) }}</small>
+                  </div>
                 </div>
-                <h4 class="font-bold text-gray-800 mb-2">{{ $laporan[0] }}</h4>
-                <div class="flex items-center text-sm text-gray-600 mb-1">
-                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                    </svg>
-                    {{ $laporan[2] }}
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="ti ti-calendar-event me-2 text-primary"></i>
+                  <span>{{ $data['periode'] }}</span>
                 </div>
-                <div class="flex items-center text-sm text-gray-600 mb-3">
-                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/>
-                    </svg>
-                    {{ $laporan[1] }}
-                </div>
-                <div class="flex gap-2">
-                    <button class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">Lihat</button>
-                    <button class="px-3 py-2 border border-gray-300 text-gray-700 text-sm rounded-lg hover:bg-gray-50">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/>
-                        </svg>
+              </td>
+              <td>
+                @if($data['temuan'] > 0)
+                  <span class="badge bg-danger-subtle text-danger">
+                    <i class="ti ti-alert-circle me-1"></i>{{ $data['temuan'] }} Temuan
+                  </span>
+                @else
+                  <span class="badge bg-light-secondary text-secondary">
+                    Belum Ada Data
+                  </span>
+                @endif
+              </td>
+              <td class="text-center">
+                @if($data['status'] === 'completed')
+                  <span class="badge bg-success">Selesai</span>
+                @elseif($data['status'] === 'ongoing')
+                  <span class="badge bg-warning">Berjalan</span>
+                @else
+                  <span class="badge bg-info">Terjadwal</span>
+                @endif
+              </td>
+              <td class="text-center">
+                <div class="btn-group" role="group">
+                  @if($data['status'] === 'completed')
+                    <button class="btn btn-sm btn-primary" title="Lihat Laporan">
+                      <i class="ti ti-eye"></i>
                     </button>
+                    <button class="btn btn-sm btn-success" title="Download PDF">
+                      <i class="ti ti-download"></i>
+                    </button>
+                  @else
+                    <button class="btn btn-sm btn-secondary" disabled title="Belum Tersedia">
+                      <i class="ti ti-eye-off"></i>
+                    </button>
+                  @endif
                 </div>
-            </div>
+              </td>
+            </tr>
             @endforeach
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <small class="text-muted">Menampilkan 1-5 dari 5 laporan</small>
         </div>
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item disabled">
+              <a class="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
+  </div>
+
+  <!-- Info Box -->
+  <div class="alert alert-info mt-4" role="alert">
+    <div class="d-flex align-items-center">
+      <i class="ti ti-info-circle fs-5 me-2"></i>
+      <div>
+        <strong>Informasi:</strong> Halaman ini menampilkan data dummy untuk demonstrasi. 
+        Fitur laporan lengkap akan dikembangkan sesuai kebutuhan sistem audit internal.
+      </div>
+    </div>
+  </div>
+
 </x-app-layout>

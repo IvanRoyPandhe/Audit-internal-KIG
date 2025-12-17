@@ -1,54 +1,73 @@
 <x-app-layout>
-    <x-slot name="title">Manajemen Role</x-slot>
+  <x-slot name="title">Manajemen Roles</x-slot>
 
-    @if(session('success'))
-    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg mb-4">
-        {{ session('success') }}
-    </div>
-    @endif
-
-    @if(session('error'))
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-4">
-        {{ session('error') }}
-    </div>
-    @endif
-
-    <div class="bg-white rounded-2xl shadow-xl p-6">
-        <div class="flex items-center justify-between mb-6">
-            <h3 class="text-xl font-bold text-gray-800">Daftar Role</h3>
-            <a href="{{ route('roles.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"/>
-                </svg>
-                Tambah Role
-            </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            @foreach($roles as $role)
-            <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                        </svg>
-                    </div>
-                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full">
-                        {{ $role->users_count }} Users
-                    </span>
-                </div>
-                <h4 class="text-lg font-bold text-gray-800 mb-2">{{ $role->display_name }}</h4>
-                <p class="text-sm text-gray-600 mb-4">{{ $role->description }}</p>
-                <div class="flex gap-2">
-                    <a href="{{ route('roles.edit', $role) }}" class="flex-1 px-3 py-2 bg-blue-600 text-white text-sm text-center rounded-lg hover:bg-blue-700">Edit</a>
-                    <form action="{{ route('roles.destroy', $role) }}" method="POST" class="flex-1">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('Yakin hapus role ini?')" class="w-full px-3 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700">Hapus</button>
-                    </form>
-                </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <h5 class="card-title fw-semibold mb-2">Daftar Roles</h5>
+              <p class="text-muted mb-0">Kelola role dan permission pengguna</p>
             </div>
-            @endforeach
+            <a href="{{ route('roles.create') }}" class="btn btn-primary">
+              <i class="ti ti-plus me-2"></i>Tambah Role
+            </a>
+          </div>
+
+          @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <i class="ti ti-check me-2"></i>{{ session('success') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+
+          @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="ti ti-alert-circle me-2"></i>{{ session('error') }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          @endif
+
+          <div class="row">
+            @forelse($roles as $role)
+            <div class="col-md-4 mb-3">
+              <div class="card border">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded p-3">
+                      <i class="ti ti-shield-check text-primary fs-5"></i>
+                    </div>
+                    <span class="badge bg-info">{{ $role->users_count }} Users</span>
+                  </div>
+                  <h5 class="card-title mb-2">{{ $role->display_name }}</h5>
+                  <p class="text-muted small mb-3">{{ $role->description ?? 'Tidak ada deskripsi' }}</p>
+                  <div class="d-flex gap-2">
+                    <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-warning flex-fill">
+                      <i class="ti ti-edit me-1"></i>Edit
+                    </a>
+                    <form action="{{ route('roles.destroy', $role) }}" method="POST" class="flex-fill" onsubmit="return confirm('Yakin ingin menghapus role ini?')">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-sm btn-danger w-100">
+                        <i class="ti ti-trash me-1"></i>Hapus
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            @empty
+            <div class="col-12">
+              <div class="text-center py-5">
+                <i class="ti ti-shield-off" style="font-size: 48px; color: #ccc;"></i>
+                <p class="text-muted mt-2">Belum ada role</p>
+              </div>
+            </div>
+            @endforelse
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </x-app-layout>

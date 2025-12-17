@@ -67,6 +67,12 @@ class DashboardController extends Controller
         // Questions needing review (in_progress status)
         $questionsNeedReview = AuditQuestion::where('status', 'in_progress')->count();
 
+        // Get all timelines for current year for Gantt Chart and Calendar View
+        $timelines = AuditTimeline::with('department')
+            ->where('audit_year', $year)
+            ->orderBy('start_date')
+            ->get();
+
         // Recent programs
         $recentPrograms = AuditProgram::with(['auditTimeline.department', 'createdBy'])
             ->latest()
@@ -140,6 +146,8 @@ class DashboardController extends Controller
             'closedQuestions' => $closedQuestions,
             'monthlyStats' => $monthlyStats,
             'questionDistribution' => $questionDistribution,
+            'timelines' => $timelines,
+            'year' => $year,
         ];
     }
 

@@ -1,459 +1,367 @@
 <x-app-layout>
-    <x-slot name="title">Program Audit - {{ $program->program_name }}</x-slot>
+  <x-slot name="title">Detail Program Audit</x-slot>
 
-    <div class="space-y-6">
-        <!-- Header -->
-        <div class="bg-white rounded-xl shadow p-6">
-            <div class="flex items-start justify-between">
-                <div class="flex-1">
-                    <a href="{{ route('rkia.program') }}" class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 mb-4">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                        </svg>
-                        Kembali ke Program
-                    </a>
-                    
-                    <div class="flex items-center space-x-3 mb-2">
-                        <h2 class="text-2xl font-bold text-gray-900">{{ $program->program_name }}</h2>
-                        @if($program->status === 'draft')
-                            <span class="px-3 py-1 bg-gray-100 text-gray-800 text-sm font-medium rounded-full">Draft</span>
-                        @elseif($program->status === 'active')
-                            <span class="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">Active</span>
+  <!-- Header -->
+  <div class="card bg-info-subtle shadow-none position-relative overflow-hidden mb-4">
+    <div class="card-body px-4 py-3">
+      <div class="row align-items-center">
+        <div class="col-9">
+          <h4 class="fw-semibold mb-8">Detail Program Audit</h4>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a class="text-muted text-decoration-none" href="{{ route('dashboard') }}">Dashboard</a></li>
+              <li class="breadcrumb-item"><a class="text-muted text-decoration-none" href="{{ route('rkia.program') }}">Program Kerja Audit</a></li>
+              <li class="breadcrumb-item"><a class="text-muted text-decoration-none" href="{{ route('rkia.program-list') }}">Daftar Program</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Detail</li>
+            </ol>
+          </nav>
+        </div>
+        <div class="col-3">
+          <div class="text-center mb-n5">
+            <img src="{{ asset('assets/images/breadcrumb/ChatBc.png') }}" alt="" class="img-fluid mb-n4">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="ti ti-check me-2"></i>{{ session('success') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+
+  @if(session('info'))
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+      <i class="ti ti-info-circle me-2"></i>{{ session('info') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+
+  @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="ti ti-alert-circle me-2"></i>{{ session('error') }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  @endif
+
+  <!-- Program Info -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="d-flex align-items-center">
+          <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
+            <iconify-icon icon="solar:clipboard-list-bold-duotone" class="text-primary fs-7"></iconify-icon>
+          </div>
+          <div>
+            <h5 class="mb-1">{{ $program->program_name }}</h5>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+              <span class="badge bg-light-primary text-primary">{{ $program->program_code }}</span>
+              <span class="badge bg-light-info text-info">{{ $program->auditTimeline->department->name }}</span>
+              <span class="text-muted">
+                <i class="ti ti-calendar-event me-1"></i>
+                {{ $program->start_date->format('d M Y') }} - {{ $program->end_date->format('d M Y') }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div>
+          @if($program->status === 'draft')
+            <span class="badge bg-secondary fs-5">Draft</span>
+          @elseif($program->status === 'active')
+            <span class="badge bg-success fs-5">Aktif</span>
+          @elseif($program->status === 'completed')
+            <span class="badge bg-primary fs-5">Selesai</span>
+          @endif
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">Deskripsi:</h6>
+          <p class="text-muted">{{ $program->description ?? '-' }}</p>
+        </div>
+        <div class="col-md-6">
+          <h6 class="fw-semibold mb-2">Tujuan Audit:</h6>
+          <p class="text-muted">{{ $program->audit_objective ?? '-' }}</p>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <h6 class="fw-semibold mb-2">Untuk Memastikan:</h6>
+          <p class="text-muted">{{ $program->assurance_scope ?? '-' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tim & Risiko -->
+  <div class="row">
+    <!-- Tim Auditor -->
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-3">
+            <i class="ti ti-users me-2"></i>Tim Auditor
+          </h5>
+          
+          <div class="mb-3">
+            <h6 class="text-muted mb-2">Ketua Tim:</h6>
+            @if($program->teamLeader)
+              <div class="d-flex align-items-center">
+                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-2">
+                  <i class="ti ti-user-star text-primary"></i>
+                </div>
+                <div>
+                  <h6 class="mb-0">{{ $program->teamLeader->name }}</h6>
+                  <small class="text-muted">{{ $program->teamLeader->position ?? 'Auditor' }}</small>
+                </div>
+              </div>
+            @else
+              <span class="text-muted">-</span>
+            @endif
+          </div>
+
+          <div>
+            <h6 class="text-muted mb-2">Anggota Tim:</h6>
+            @if($program->team_members_users->count() > 0)
+              <div class="d-flex flex-wrap gap-2">
+                @foreach($program->team_members_users as $member)
+                  <span class="badge bg-light-info text-info">
+                    <i class="ti ti-user me-1"></i>{{ $member->name }}
+                  </span>
+                @endforeach
+              </div>
+            @else
+              <span class="text-muted">Tidak ada anggota</span>
+            @endif
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risiko -->
+    <div class="col-md-6 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold mb-3">
+            <i class="ti ti-alert-triangle me-2"></i>Identifikasi Risiko
+          </h5>
+          
+          @if($program->risks && count($program->risks) > 0)
+            <div class="list-group list-group-flush">
+              @foreach($program->risks as $index => $risk)
+                <div class="list-group-item px-0">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1">{{ $index + 1 }}. {{ $risk['name'] }}</h6>
+                      <div class="mt-2">
+                        @if($risk['level'] === 'low')
+                          <span class="badge bg-success">🟢 Low - Rendah</span>
+                        @elseif($risk['level'] === 'medium')
+                          <span class="badge bg-warning">🟡 Medium - Sedang</span>
+                        @elseif($risk['level'] === 'high')
+                          <span class="badge bg-orange">🟠 High - Tinggi</span>
                         @else
-                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">Completed</span>
+                          <span class="badge bg-danger">🔴 Critical - Kritis</span>
                         @endif
+                      </div>
                     </div>
-                    
-                    <p class="text-gray-600 mb-4">{{ $program->description }}</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <p class="text-xs text-gray-600 mb-1">Departemen</p>
-                            <p class="font-semibold text-gray-900">{{ $program->auditTimeline->department->name }}</p>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <p class="text-xs text-gray-600 mb-1">Kode Program</p>
-                            <p class="font-semibold text-gray-900">{{ $program->program_code }}</p>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <p class="text-xs text-gray-600 mb-1">Periode</p>
-                            <p class="font-semibold text-gray-900">{{ $program->start_date->format('d M') }} - {{ $program->end_date->format('d M Y') }}</p>
-                        </div>
-                        <div class="bg-gray-50 rounded-lg p-3">
-                            <p class="text-xs text-gray-600 mb-1">Total Pertanyaan</p>
-                            <p class="font-semibold text-gray-900">{{ $program->total_questions }}</p>
-                        </div>
-                    </div>
+                  </div>
                 </div>
+              @endforeach
             </div>
+          @else
+            <p class="text-muted">Tidak ada risiko yang diidentifikasi</p>
+          @endif
         </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Progress Tracking -->
-        @if($program->total_questions > 0)
-        <div class="bg-white rounded-xl shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Progress Audit</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                @php
-                    $openCount = $program->auditQuestions->where('status', 'open')->count();
-                    $inProgressCount = $program->auditQuestions->where('status', 'in_progress')->count();
-                    $closedCount = $program->closed_questions;
-                    $answeredCount = $program->answered_questions;
-                    $progressPercentage = $program->total_questions > 0 ? round(($closedCount / $program->total_questions) * 100) : 0;
-                @endphp
-                
-                <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-red-600 font-medium mb-1">Open</p>
-                            <p class="text-2xl font-bold text-red-700">{{ $openCount }}</p>
-                        </div>
-                        <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                        </svg>
+  <!-- Documents Section -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h5 class="card-title fw-semibold mb-0">
+          <i class="ti ti-file-text me-2"></i>Dokumen yang Dibutuhkan
+        </h5>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+          <i class="ti ti-plus me-2"></i>Tambah Dokumen
+        </button>
+      </div>
+
+      @if($program->documents->count() > 0)
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead class="table-light">
+              <tr>
+                <th width="5%">No</th>
+                <th>Nama Dokumen</th>
+                <th width="15%">Status</th>
+                <th width="15%">Wajib</th>
+                <th width="20%">File</th>
+                <th width="15%" class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($program->documents as $index => $doc)
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>
+                  <div>
+                    <h6 class="mb-1">{{ $doc->document_name }}</h6>
+                    @if($doc->description)
+                      <small class="text-muted">{{ Str::limit($doc->description, 80) }}</small>
+                    @endif
+                  </div>
+                </td>
+                <td>
+                  @if($doc->status === 'required')
+                    <span class="badge bg-secondary">Dibutuhkan</span>
+                  @elseif($doc->status === 'uploaded')
+                    <span class="badge bg-info">Terupload</span>
+                  @elseif($doc->status === 'reviewed')
+                    <span class="badge bg-warning">Direview</span>
+                  @else
+                    <span class="badge bg-success">Disetujui</span>
+                  @endif
+                </td>
+                <td>
+                  @if($doc->is_mandatory)
+                    <span class="badge bg-danger">Wajib</span>
+                  @else
+                    <span class="badge bg-secondary">Opsional</span>
+                  @endif
+                </td>
+                <td>
+                  @if($doc->file_path)
+                    <div class="d-flex align-items-center">
+                      <i class="ti ti-file-check text-success me-2"></i>
+                      <small>{{ $doc->file_name }}</small>
                     </div>
-                </div>
+                  @else
+                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#uploadModal{{ $doc->id }}">
+                      <i class="ti ti-upload me-1"></i>Upload
+                    </button>
+                  @endif
+                </td>
+                <td class="text-center">
+                  <div class="btn-group" role="group">
+                    @if($doc->file_path)
+                      <a href="{{ route('audit-program-documents.download', $doc) }}" class="btn btn-sm btn-success" title="Download">
+                        <i class="ti ti-download"></i>
+                      </a>
+                    @endif
+                    <form action="{{ route('audit-program-documents.destroy', $doc) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus dokumen ini?')">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
+                        <i class="ti ti-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
 
-                <div class="bg-yellow-50 border-l-4 border-yellow-500 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-yellow-600 font-medium mb-1">In Progress</p>
-                            <p class="text-2xl font-bold text-yellow-700">{{ $inProgressCount }}</p>
-                        </div>
-                        <svg class="w-8 h-8 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
-                        </svg>
+              <!-- Upload Modal for each document -->
+              <div class="modal fade" id="uploadModal{{ $doc->id }}" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Upload: {{ $doc->document_name }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
-                </div>
-
-                <div class="bg-green-50 border-l-4 border-green-500 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-green-600 font-medium mb-1">Closed</p>
-                            <p class="text-2xl font-bold text-green-700">{{ $closedCount }}</p>
+                    <form action="{{ route('audit-program-documents.upload', $doc) }}" method="POST" enctype="multipart/form-data">
+                      @csrf
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <label class="form-label">Pilih File</label>
+                          <input type="file" name="file" class="form-control" required accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png">
+                          <small class="text-muted">Format: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (Max: 10MB)</small>
                         </div>
-                        <svg class="w-8 h-8 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                        </svg>
-                    </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">
+                          <i class="ti ti-upload me-2"></i>Upload
+                        </button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-
-                <div class="bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xs text-blue-600 font-medium mb-1">Completion</p>
-                            <p class="text-2xl font-bold text-blue-700">{{ $progressPercentage }}%</p>
-                        </div>
-                        <svg class="w-8 h-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Progress Bar -->
-            <div class="mb-2">
-                <div class="flex items-center justify-between text-sm mb-1">
-                    <span class="text-gray-600">Progress Keseluruhan</span>
-                    <span class="font-semibold text-gray-900">{{ $closedCount }} / {{ $program->total_questions }} Pertanyaan</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-3">
-                    <div class="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-500" style="width: {{ $progressPercentage }}%"></div>
-                </div>
-            </div>
+              </div>
+              @endforeach
+            </tbody>
+          </table>
         </div>
-        @endif
+      @else
+        <div class="text-center py-5">
+          <iconify-icon icon="solar:file-text-line-duotone" style="font-size: 64px; color: #ccc;"></iconify-icon>
+          <h5 class="text-muted mt-3">Belum Ada Dokumen</h5>
+          <p class="text-muted">Tambahkan dokumen yang dibutuhkan untuk program audit ini</p>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+            <i class="ti ti-plus me-2"></i>Tambah Dokumen
+          </button>
+        </div>
+      @endif
+    </div>
+  </div>
 
-        <!-- Action Buttons -->
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <button onclick="openAddQuestionModal()" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Tambah Pertanyaan Manual
-                </button>
+  <!-- Action Buttons -->
+  <div class="d-flex justify-content-between mb-4">
+    <a href="{{ route('rkia.program-list') }}" class="btn btn-secondary">
+      <i class="ti ti-arrow-left me-2"></i>Kembali
+    </a>
+    @if($program->documents->count() > 0)
+      <a href="{{ route('rkia.program') }}" class="btn btn-success">
+        <i class="ti ti-check me-2"></i>Selesai
+      </a>
+    @endif
+  </div>
 
-                <button class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                    </svg>
-                    Import dari Excel
-                </button>
+  <!-- Add Document Modal -->
+  <div class="modal fade" id="addDocumentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="ti ti-plus me-2"></i>Tambah Dokumen yang Dibutuhkan
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form action="{{ route('audit-program-documents.store', $program) }}" method="POST">
+          @csrf
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nama Dokumen <span class="text-danger">*</span></label>
+              <input type="text" name="document_name" class="form-control" required placeholder="Contoh: Laporan Keuangan Q4 2024">
             </div>
-
-            <button class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                Download Template Excel
+            <div class="mb-3">
+              <label class="form-label">Deskripsi</label>
+              <textarea name="description" class="form-control" rows="3" placeholder="Jelaskan detail dokumen yang dibutuhkan..."></textarea>
+            </div>
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="is_mandatory" id="is_mandatory" checked>
+                <label class="form-check-label" for="is_mandatory">
+                  Dokumen Wajib
+                </label>
+              </div>
+              <small class="text-muted">Centang jika dokumen ini wajib dilengkapi</small>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="ti ti-device-floppy me-2"></i>Simpan
             </button>
-        </div>
-
-        <!-- Filter & Search -->
-        <div class="bg-white rounded-xl shadow p-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <select id="statusFilter" class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm">
-                        <option value="">Semua Status</option>
-                        <option value="open">Open</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="closed">Closed</option>
-                    </select>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <input type="text" id="searchQuestion" placeholder="Cari pertanyaan..." class="rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500 text-sm">
-                </div>
-            </div>
-        </div>
-
-        <!-- Questions List -->
-        <div class="bg-white rounded-xl shadow">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900">Daftar Pertanyaan Audit</h3>
-                <p class="text-sm text-gray-600 mt-1">Kelola pertanyaan dan data yang dibutuhkan untuk audit</p>
-            </div>
-
-            <div class="p-6">
-                @if($program->auditQuestions->count() > 0)
-                    <div class="space-y-3">
-                        @foreach($program->auditQuestions as $question)
-                            <div class="border border-gray-200 rounded-lg p-5 hover:shadow-md transition">
-                                <div class="flex items-start justify-between mb-3">
-                                    <div class="flex-1">
-                                        <div class="flex items-center space-x-2 mb-2">
-                                            <span class="text-sm font-bold text-gray-700 bg-gray-100 px-2 py-1 rounded">#{{ $question->order_number }}</span>
-                                            
-                                            <!-- Status Badge -->
-                                            @if($question->status === 'open')
-                                                <span class="px-3 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">Open</span>
-                                            @elseif($question->status === 'in_progress')
-                                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">In Progress</span>
-                                            @else
-                                                <span class="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Closed</span>
-                                            @endif
-
-                                            <!-- Answer Type Badge -->
-                                            @if($question->answer_type === 'text')
-                                                <span class="px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded">Text</span>
-                                            @elseif($question->answer_type === 'file')
-                                                <span class="px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded">File</span>
-                                            @else
-                                                <span class="px-2 py-1 bg-indigo-50 text-indigo-700 text-xs font-medium rounded">Text & File</span>
-                                            @endif
-
-                                            @if($question->is_required)
-                                                <span class="px-2 py-1 bg-orange-50 text-orange-700 text-xs font-medium rounded">Wajib</span>
-                                            @endif
-                                        </div>
-                                        
-                                        <p class="text-gray-900 font-semibold text-base mb-1">{{ $question->question }}</p>
-                                        
-                                        @if($question->description)
-                                            <p class="text-sm text-gray-600 mb-2">{{ $question->description }}</p>
-                                        @endif
-
-                                        @if($question->required_documents)
-                                            <div class="flex items-start text-sm text-gray-600 mt-2">
-                                                <svg class="w-4 h-4 mr-1 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"/>
-                                                </svg>
-                                                <span>Dokumen: {{ $question->required_documents }}</span>
-                                            </div>
-                                        @endif
-
-                                        @if($question->due_date)
-                                            <div class="flex items-center text-sm text-gray-600 mt-2">
-                                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                                                </svg>
-                                                <span>Due: {{ $question->due_date->format('d M Y') }}</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- Action Buttons -->
-                                <div class="flex items-center justify-between pt-3 border-t border-gray-200">
-                                    <div class="flex items-center space-x-2">
-                                        <!-- View Detail Button -->
-                                        <a href="{{ route('audit-questions.show', $question) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                            </svg>
-                                            Detail & Komentar
-                                        </a>
-
-                                        <!-- Update Status Dropdown -->
-                                        <div class="relative inline-block text-left">
-                                            <button onclick="toggleStatusDropdown({{ $question->id }})" class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-semibold rounded-lg hover:bg-gray-200">
-                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                                                </svg>
-                                                Update Status
-                                            </button>
-                                            <div id="statusDropdown{{ $question->id }}" class="hidden absolute left-0 mt-2 w-48 rounded-lg shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                                <div class="py-1">
-                                                    <form action="{{ route('audit-questions.update-status', $question) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="status" value="open">
-                                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-700">
-                                                            <span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                                                            Open
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{ route('audit-questions.update-status', $question) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="status" value="in_progress">
-                                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50 hover:text-yellow-700">
-                                                            <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full mr-2"></span>
-                                                            In Progress
-                                                        </button>
-                                                    </form>
-                                                    <form action="{{ route('audit-questions.update-status', $question) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <input type="hidden" name="status" value="closed">
-                                                        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700">
-                                                            <span class="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                                                            Closed
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center space-x-2">
-                                        <!-- Edit Button -->
-                                        <button onclick="openEditQuestionModal({{ $question->id }})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="Edit">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                            </svg>
-                                        </button>
-
-                                        <!-- Delete Button -->
-                                        <form action="{{ route('audit-questions.destroy', $question) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus pertanyaan ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="p-2 text-red-600 hover:bg-red-50 rounded-lg" title="Hapus">
-                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <!-- Empty State -->
-                    <div class="text-center py-12">
-                        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        <h3 class="text-lg font-medium text-gray-900 mb-2">Belum Ada Pertanyaan</h3>
-                        <p class="text-gray-600 mb-6">Mulai dengan menambahkan pertanyaan audit atau import dari Excel</p>
-                        <div class="flex items-center justify-center space-x-3">
-                            <button onclick="openAddQuestionModal()" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                                </svg>
-                                Tambah Pertanyaan
-                            </button>
-                            <button class="inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                                </svg>
-                                Import Excel
-                            </button>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 
-    <!-- Modal: Add Question -->
-    <div id="addQuestionModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-lg bg-white">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">Tambah Pertanyaan Baru</h3>
-                <button onclick="closeAddQuestionModal()" class="text-gray-400 hover:text-gray-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-
-            <form action="{{ route('audit-questions.store', $program) }}" method="POST">
-                @csrf
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Pertanyaan <span class="text-red-500">*</span></label>
-                        <textarea name="question" rows="3" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Masukkan pertanyaan audit..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Deskripsi / Penjelasan</label>
-                        <textarea name="description" rows="2" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Penjelasan tambahan (opsional)"></textarea>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipe Jawaban <span class="text-red-500">*</span></label>
-                            <select name="answer_type" required class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                                <option value="text">Text</option>
-                                <option value="file">File</option>
-                                <option value="both">Text & File</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                            <input type="date" name="due_date" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Dokumen yang Dibutuhkan</label>
-                        <input type="text" name="required_documents" class="w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500" placeholder="Contoh: SOP, Laporan Keuangan, dll">
-                    </div>
-
-                    <div class="flex items-center">
-                        <input type="checkbox" name="is_required" value="1" id="is_required" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                        <label for="is_required" class="ml-2 text-sm text-gray-700">Pertanyaan wajib dijawab</label>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end space-x-3 mt-6 pt-4 border-t">
-                    <button type="button" onclick="closeAddQuestionModal()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
-                        Batal
-                    </button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                        Simpan Pertanyaan
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openAddQuestionModal() {
-            document.getElementById('addQuestionModal').classList.remove('hidden');
-        }
-
-        function closeAddQuestionModal() {
-            document.getElementById('addQuestionModal').classList.add('hidden');
-        }
-
-        function toggleStatusDropdown(questionId) {
-            const dropdown = document.getElementById('statusDropdown' + questionId);
-            dropdown.classList.toggle('hidden');
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            const dropdowns = document.querySelectorAll('[id^="statusDropdown"]');
-            dropdowns.forEach(dropdown => {
-                if (!dropdown.classList.contains('hidden') && !event.target.closest('button')) {
-                    dropdown.classList.add('hidden');
-                }
-            });
-        });
-
-        // Filter questions by status
-        document.getElementById('statusFilter')?.addEventListener('change', function() {
-            const status = this.value.toLowerCase();
-            const questions = document.querySelectorAll('[class*="border border-gray-200"]');
-            
-            questions.forEach(question => {
-                if (status === '') {
-                    question.style.display = 'block';
-                } else {
-                    const statusBadge = question.querySelector('[class*="rounded-full"]');
-                    if (statusBadge && statusBadge.textContent.toLowerCase().includes(status.replace('_', ' '))) {
-                        question.style.display = 'block';
-                    } else {
-                        question.style.display = 'none';
-                    }
-                }
-            });
-        });
-
-        // Search questions
-        document.getElementById('searchQuestion')?.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const questions = document.querySelectorAll('[class*="border border-gray-200"]');
-            
-            questions.forEach(question => {
-                const text = question.textContent.toLowerCase();
-                question.style.display = text.includes(searchTerm) ? 'block' : 'none';
-            });
-        });
-    </script>
 </x-app-layout>

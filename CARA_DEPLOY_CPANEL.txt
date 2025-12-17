@@ -1,0 +1,83 @@
+========================================
+CARA DEPLOY KE CPANEL
+========================================
+
+LANGKAH 1: UPLOAD APLIKASI
+---------------------------
+1. Compress folder project ini (exclude node_modules, vendor, .git)
+2. Upload ke cPanel dan extract di folder: /home/username/si-audit/
+3. Install dependencies: composer install --no-dev
+
+LANGKAH 2: UPLOAD PUBLIC FILES
+-------------------------------
+1. Buka folder: public_html_ready/
+2. Upload SEMUA isi folder ini ke: public_html/ di cPanel
+3. File yang akan ter-upload:
+   - index.php
+   - .htaccess
+   - assets/
+   - build/
+   - storage/
+   - favicon.ico
+   - robots.txt
+
+LANGKAH 3: SETUP DATABASE
+--------------------------
+1. Create database di cPanel MySQL
+2. Create user dan assign ke database
+3. Edit file .env di /home/username/si-audit/
+4. Update DB_DATABASE, DB_USERNAME, DB_PASSWORD
+5. Import database atau run: php artisan migrate --force
+
+LANGKAH 4: SETUP PERMISSIONS
+-----------------------------
+Via Terminal SSH:
+cd /home/username/si-audit
+chmod -R 775 storage
+chmod -R 775 bootstrap/cache
+
+LANGKAH 5: OPTIMIZE
+-------------------
+cd /home/username/si-audit
+php artisan key:generate --force
+php artisan storage:link
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+LANGKAH 6: TEST
+---------------
+Buka website Anda di browser
+
+STRUKTUR AKHIR:
+---------------
+/home/username/
+├── si-audit/              (aplikasi Laravel)
+│   ├── app/
+│   ├── bootstrap/
+│   ├── config/
+│   ├── database/
+│   ├── resources/
+│   ├── routes/
+│   ├── storage/
+│   ├── vendor/
+│   ├── .env
+│   └── artisan
+└── public_html/           (dari folder public_html_ready)
+    ├── index.php
+    ├── .htaccess
+    ├── assets/
+    └── build/
+
+CATATAN PENTING:
+----------------
+- Path di index.php sudah diset ke: ../si-audit/
+- Jika nama folder berbeda, edit index.php
+- Set APP_DEBUG=false di .env untuk production
+- Backup database sebelum update
+
+TROUBLESHOOTING:
+----------------
+Error 500: Check storage permissions dan .env
+Database Error: Check credentials di .env
+Assets tidak load: Check path di index.php

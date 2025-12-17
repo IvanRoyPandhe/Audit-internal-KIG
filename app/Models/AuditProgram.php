@@ -16,6 +16,11 @@ class AuditProgram extends Model
         'program_code',
         'program_name',
         'description',
+        'audit_objective',
+        'team_leader_id',
+        'team_members',
+        'risks',
+        'assurance_scope',
         'status',
         'created_by',
         'start_date',
@@ -28,6 +33,8 @@ class AuditProgram extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'team_members' => 'array',
+        'risks' => 'array',
     ];
 
     public function auditTimeline(): BelongsTo
@@ -43,5 +50,26 @@ class AuditProgram extends Model
     public function auditQuestions(): HasMany
     {
         return $this->hasMany(AuditQuestion::class);
+    }
+
+    public function teamLeader(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'team_leader_id');
+    }
+
+    public function documents(): HasMany
+    {
+        return $this->hasMany(AuditProgramDocument::class);
+    }
+
+    /**
+     * Get team members as User collection
+     */
+    public function getTeamMembersUsersAttribute()
+    {
+        if (empty($this->team_members)) {
+            return collect();
+        }
+        return User::whereIn('id', $this->team_members)->get();
     }
 }

@@ -1,0 +1,90 @@
+/* Universal Dark Mode - Auto Apply to All Applications */
+[data-theme="dark"] {
+  --bs-body-bg: #1a1a1a;
+  --bs-body-color: #ffffff;
+  --bs-card-bg: #2d2d2d;
+  --bs-border-color: #404040;
+  --bs-primary: #6bb6ff;
+  --bs-success: #40c057;
+  --bs-info: #339af0;
+  --bs-warning: #ffd43b;
+  --bs-danger: #ff6b6b;
+  --bs-secondary: #6c757d;
+  --bs-light: #404040;
+  --bs-dark: #ffffff;
+}
+
+/* Universal Card Body Auto Dark Mode */
+[data-theme="dark"] .card-body {
+  background-color: var(--bs-card-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
+[data-theme="dark"] .card-body * {
+  color: var(--bs-body-color) !important;
+}
+
+[data-theme="dark"] .card-body .text-muted {
+  color: #cccccc !important;
+}
+
+[data-theme="dark"] .card-body small {
+  color: #cccccc !important;
+}
+
+[data-theme="dark"] .card-body .badge {
+  color: white !important;
+}
+
+[data-theme="dark"] .card-body .text-success {
+  color: var(--bs-success) !important;
+}
+
+[data-theme="dark"] .card-body .text-danger {
+  color: var(--bs-danger) !important;
+}
+
+[data-theme="dark"] .card-body .text-warning {
+  color: var(--bs-warning) !important;
+}
+
+[data-theme="dark"] .card-body .text-info {
+  color: var(--bs-info) !important;
+}
+
+[data-theme="dark"] .card-body .text-primary {
+  color: var(--bs-primary) !important;
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--bs-card-bg) !important;
+  border-color: var(--bs-border-color) !important;
+}
+
+[data-theme="dark"] body {
+  background-color: var(--bs-body-bg) !important;
+  color: var(--bs-body-color) !important;
+}
+
+/* Universal Auto Text Color Change */
+[data-theme="dark"] * {
+  color: var(--bs-body-color) !important;
+}
+
+/* Preserve Bootstrap color utilities */
+[data-theme="dark"] .text-primary { color: var(--bs-primary) !important; }
+[data-theme="dark"] .text-success { color: var(--bs-success) !important; }
+[data-theme="dark"] .text-danger { color: var(--bs-danger) !important; }
+[data-theme="dark"] .text-warning { color: var(--bs-warning) !important; }
+[data-theme="dark"] .text-info { color: var(--bs-info) !important; }
+[data-theme="dark"] .text-secondary { color: var(--bs-secondary) !important; }
+[data-theme="dark"] .text-muted { color: #cccccc !important; }
+[data-theme="dark"] .text-white { color: #ffffff !important; }
+[data-theme="dark"] .text-light { color: #f8f9fa !important; }
+[data-theme="dark"] .text-dark { color: var(--bs-body-color) !important; }
+[data-theme="dark"] .text-black { color: var(--bs-body-color) !important; }
+
+/* Header preserve white text */
+[data-theme="dark"] .app-topstrip * {
+  color: #ffffff !important;
+}

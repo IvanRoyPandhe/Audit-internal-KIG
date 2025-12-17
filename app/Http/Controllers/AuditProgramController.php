@@ -33,6 +33,14 @@ class AuditProgramController extends Controller
         $validated = $request->validate([
             'program_name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'audit_objective' => 'required|string',
+            'team_leader_id' => 'required|exists:users,id',
+            'team_members' => 'nullable|array',
+            'team_members.*' => 'exists:users,id',
+            'risks' => 'required|array|min:1',
+            'risks.*.name' => 'required|string|max:255',
+            'risks.*.level' => 'required|in:low,medium,high,critical',
+            'assurance_scope' => 'required|string',
         ]);
 
         // Generate program code
@@ -42,6 +50,11 @@ class AuditProgramController extends Controller
             'program_code' => $programCode,
             'program_name' => $validated['program_name'],
             'description' => $validated['description'],
+            'audit_objective' => $validated['audit_objective'],
+            'team_leader_id' => $validated['team_leader_id'],
+            'team_members' => $validated['team_members'] ?? [],
+            'risks' => $validated['risks'],
+            'assurance_scope' => $validated['assurance_scope'],
             'status' => 'draft',
             'created_by' => auth()->id(),
             'start_date' => $timeline->start_date,
@@ -49,15 +62,21 @@ class AuditProgramController extends Controller
         ]);
 
         return redirect()->route('audit-programs.show', $program)
-            ->with('success', 'Program audit berhasil dibuat. Silakan tambahkan pertanyaan audit.');
+            ->with('success', 'Program audit berhasil dibuat. Silakan tambahkan dokumen yang dibutuhkan.');
     }
 
     /**
-     * Show program detail with questions
+     * Show program detail with documents and questions
      */
     public function show(AuditProgram $program)
     {
-        $program->load(['auditTimeline.department', 'auditQuestions', 'createdBy']);
+        $program->load([
+            'auditTimeline.department', 
+            'auditQuestions', 
+            'documents',
+            'createdBy',
+            'teamLeader'
+        ]);
         
         return view('rkia.program-show', compact('program'));
     }
