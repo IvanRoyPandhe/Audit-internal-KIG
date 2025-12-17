@@ -1,0 +1,257 @@
+========================================
+CARA INSTALL DI XAMPP WINDOWS
+========================================
+
+REQUIREMENTS:
+-------------
+1. XAMPP (PHP 8.1 atau lebih tinggi)
+2. Composer (https://getcomposer.org/)
+3. Node.js & NPM (optional, untuk compile assets)
+
+LANGKAH 1: INSTALL XAMPP
+-------------------------
+1. Download XAMPP dari: https://www.apachefriends.org/
+2. Install XAMPP (pilih Apache, MySQL, PHP)
+3. Start Apache dan MySQL dari XAMPP Control Panel
+
+LANGKAH 2: COPY PROJECT
+------------------------
+1. Copy folder project ini ke: C:\xampp\htdocs\
+   Misal: C:\xampp\htdocs\audit-kig\
+
+2. Struktur folder:
+   C:\xampp\htdocs\audit-kig\
+   ├── app\
+   ├── bootstrap\
+   ├── config\
+   ├── database\
+   ├── public\
+   ├── resources\
+   ├── routes\
+   ├── storage\
+   ├── vendor\
+   ├── .env
+   └── artisan
+
+LANGKAH 3: INSTALL DEPENDENCIES
+--------------------------------
+1. Buka Command Prompt (CMD) atau PowerShell
+2. Masuk ke folder project:
+   cd C:\xampp\htdocs\audit-kig
+
+3. Install Composer dependencies:
+   composer install
+
+4. (Optional) Install NPM dependencies:
+   npm install
+   npm run build
+
+LANGKAH 4: SETUP DATABASE
+--------------------------
+1. Buka browser: http://localhost/phpmyadmin
+2. Create database baru: audit_kig
+3. Import database:
+   - Klik database "audit_kig"
+   - Tab "Import"
+   - Choose file: database_export.sql
+   - Klik "Go"
+
+LANGKAH 5: SETUP .ENV
+----------------------
+1. Copy file .env.example ke .env (jika belum ada)
+   copy .env.example .env
+
+2. Edit file .env dengan Notepad atau editor lain:
+
+   APP_NAME="SI Audit Internal KIG"
+   APP_ENV=local
+   APP_KEY=
+   APP_DEBUG=true
+   APP_URL=http://localhost/audit-kig/public
+
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=audit_kig
+   DB_USERNAME=root
+   DB_PASSWORD=
+
+LANGKAH 6: GENERATE APP KEY
+----------------------------
+Di Command Prompt:
+php artisan key:generate
+
+LANGKAH 7: SETUP STORAGE
+-------------------------
+1. Set permissions (di Windows biasanya otomatis)
+2. Create storage link:
+   php artisan storage:link
+
+LANGKAH 8: CLEAR CACHE
+-----------------------
+php artisan config:clear
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
+
+LANGKAH 9: AKSES APLIKASI
+--------------------------
+Buka browser:
+http://localhost/audit-kig/public
+
+Atau buat Virtual Host (lihat bagian BONUS di bawah)
+
+LOGIN DEFAULT:
+--------------
+Email: admin@example.com
+Password: password
+
+(Sesuaikan dengan data di database Anda)
+
+========================================
+BONUS: SETUP VIRTUAL HOST (OPTIONAL)
+========================================
+
+Agar bisa akses dengan URL: http://audit-kig.test
+
+1. Edit file: C:\xampp\apache\conf\extra\httpd-vhosts.conf
+
+   Tambahkan di akhir file:
+
+   <VirtualHost *:80>
+       DocumentRoot "C:/xampp/htdocs/audit-kig/public"
+       ServerName audit-kig.test
+       <Directory "C:/xampp/htdocs/audit-kig/public">
+           Options Indexes FollowSymLinks
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+
+2. Edit file: C:\Windows\System32\drivers\etc\hosts
+   (Buka sebagai Administrator)
+
+   Tambahkan:
+   127.0.0.1    audit-kig.test
+
+3. Restart Apache di XAMPP Control Panel
+
+4. Akses: http://audit-kig.test
+
+========================================
+TROUBLESHOOTING
+========================================
+
+ERROR: "No application encryption key"
+---------------------------------------
+Solusi:
+php artisan key:generate
+
+ERROR: "SQLSTATE[HY000] [1045] Access denied"
+----------------------------------------------
+Solusi:
+- Cek DB_USERNAME dan DB_PASSWORD di .env
+- Default XAMPP: username=root, password=(kosong)
+
+ERROR: "Class not found"
+------------------------
+Solusi:
+composer dump-autoload
+
+ERROR: "Permission denied" di storage
+--------------------------------------
+Solusi (Windows):
+- Klik kanan folder storage → Properties
+- Tab Security → Edit
+- Berikan Full Control untuk Users
+
+ERROR: Assets tidak load (CSS/JS)
+----------------------------------
+Solusi:
+1. Pastikan akses ke folder public/
+2. Atau jalankan: npm run build
+3. Clear browser cache
+
+ERROR: "Route not found"
+------------------------
+Solusi:
+php artisan route:clear
+php artisan config:clear
+
+========================================
+TIPS DEVELOPMENT DI XAMPP
+========================================
+
+1. Gunakan PHP 8.1 atau lebih tinggi
+   - Cek versi: php -v
+   - Update PHP di XAMPP jika perlu
+
+2. Enable extension yang diperlukan di php.ini:
+   - extension=fileinfo
+   - extension=gd
+   - extension=mbstring
+   - extension=openssl
+   - extension=pdo_mysql
+   - extension=zip
+
+3. Untuk development, gunakan:
+   php artisan serve
+   Akses: http://localhost:8000
+
+4. Monitor error di:
+   storage\logs\laravel.log
+
+5. Untuk debugging, set di .env:
+   APP_DEBUG=true
+
+========================================
+PERINTAH BERGUNA
+========================================
+
+# Clear semua cache
+php artisan optimize:clear
+
+# Migrate database
+php artisan migrate
+
+# Seed database
+php artisan db:seed
+
+# Create user baru
+php artisan tinker
+>>> User::create(['name'=>'Admin', 'email'=>'admin@test.com', 'password'=>bcrypt('password')])
+
+# List routes
+php artisan route:list
+
+# Run development server
+php artisan serve
+
+========================================
+CATATAN PENTING
+========================================
+
+1. XAMPP default MySQL:
+   - Username: root
+   - Password: (kosong)
+   - Port: 3306
+
+2. Jangan gunakan XAMPP untuk production!
+   Hanya untuk development/testing
+
+3. Backup database secara berkala
+
+4. Update .env sesuai environment Anda
+
+5. Untuk production, deploy ke cPanel
+   (lihat file: CARA_DEPLOY_CPANEL.txt)
+
+========================================
+SUPPORT
+========================================
+
+Jika ada masalah:
+1. Cek storage\logs\laravel.log
+2. Cek error log Apache di XAMPP
+3. Enable APP_DEBUG=true untuk debugging
+4. Google error message yang muncul
